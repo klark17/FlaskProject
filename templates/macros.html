@@ -1,0 +1,27 @@
+{%  macro render_modal(class) %}
+<!--WILL COME IN HANDY WHEN RETURNING RESULTS
+    https://stackoverflow.com/questions/44606429/modal-window-in-jinja2-template-flask
+    https://www.reddit.com/r/flask/comments/91igae/afcreating_dynamic_modals_with_flask/-->
+
+    <div id="resultsModal" class="modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="close">&times;</div>
+                    <h1 class="lesson">Swim Lessons</h1>
+                </div>
+                <div class="modal-body">
+                    <p class="level">1</p>
+                    <p class="type">swimming/aquatics</p>
+                    <p class="startTime">Enter Time</p>
+                    <p class="Day">Monday</p>
+                    <p class="organization">Town</p>
+                    <p class="instructor">Suzie</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="signup">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

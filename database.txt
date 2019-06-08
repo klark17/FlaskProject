@@ -1,0 +1,37 @@
+Users:
+ID: unique, PK, INT
+First_Name: CHAR
+Last_Name: CHAR
+username: unique, CHAR
+password: CHAR
+age: INT
+email: unique, CHAR
+classesID_registered: FK, INT
+
+Administrator:
+first_name: CHAR
+last_name: CHAR
+username: unique, PK, FK, CHAR
+password: CHAR
+email: unique, CHAR
+
+Instructors:
+first_name: CHAR
+last_name: CHAR
+username: unique, CHAR
+password: CHAR
+email: PK, CHAR
+classesID_teaching: FK, INT
+
+Lesson:
+ID: PK, INT
+start_date: DATETIME
+end_date: DATETIME
+day: DATETIME
+time: DATETIME
+level: CHAR
+type: CHAR
+location: CHAR
+organization: CHAR
+instructor: CHAR
+contact_email (admin's): FK, CHAR
