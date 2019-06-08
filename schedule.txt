@@ -1,0 +1,14 @@
+Things that need to be completed:
+
+UI:
+***goal: get the basic HTML down then incorporate the Python
+	user profile page
+	search results
+	register pages
+
+Database:
+***goal: do this first so integrating HTML with Python is easier
+	build SQL database
+
+Testing:
+***goal: build systems first, then focus on testing
