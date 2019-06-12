@@ -2,14 +2,19 @@ from datetime import datetime, date, time
 from lessonfinder import db
 
 
+lessons = db.Table('lessons',
+                   db.Column('userId', db.Integer, db.ForeignKey('user.id')),
+                   db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id'))
+                   )
+
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     fName = db.Column(db.String(50), nullable=False)
     lName = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     age = db.Column(db.Integer)
-    # name = db.relationship('Lesson', backref='registered', lazy=True)
-    # lessons = db.relationship('Lesson', secondary=classes, backref='user', lazy=True)
+    lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('users', lazy='dynamic'))
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
 
@@ -24,7 +29,8 @@ class Admin(db.Model):
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    lessons = db.relationship('Lesson', backref='organizer', lazy=True)
+    organization = db.relationship('Organization', uselist=False, backref='administrator')
+    # lessons = db.relationship('Lesson', backref='organizer', lazy=True)
 
     def __repr__(self):
         return f"Admin('{self.username}', '{self.email}')"
@@ -37,10 +43,19 @@ class Instructor(db.Model):
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    classes = db.relationship('Lesson', backref='teacher', lazy=True)
+    # classes = db.relationship('Lesson', backref='teacher', lazy=True)
 
     def __repr__(self):
         return f"Instructor('{self.username}', '{self.email}')"
+
+
+class Organization(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    address = db.Column(db.String(50), nullable=False)
+    town = db.Column(db.String(30), unique=True, nullable=False)
+    state = db.Column(db.String(50), unique=True, nullable=False)
+    admin = db.Column(db.Integer, db.ForeignKey('admin.id'))
 
 
 class Lesson(db.Model):
@@ -55,8 +70,8 @@ class Lesson(db.Model):
     level = db.Column(db.Integer)
     location = db.Column(db.String(50), nullable=False)
     organization = db.Column(db.String(100), nullable=False)
-    instructor = db.Column(db.String(50), db.ForeignKey('instructor.email'), nullable=False)
-    contactEmail = db.Column(db.String(50), db.ForeignKey('admin.email'), nullable=False)
+    instructor = db.Column(db.String(50), db.ForeignKey('instructor.id'), nullable=False)
+    contactEmail = db.Column(db.String(50), db.ForeignKey('admin.id'), nullable=False)
     # registered = db.relationship('User', backref='registered_users', lazy=True)
     # for many-to-many: https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
