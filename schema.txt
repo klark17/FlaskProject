@@ -1,0 +1,65 @@
+CREATE TABLE users (
+	id INT NOT NULL UNIQUE
+	fName VARCHAR(50)
+	lName VARCHAR(50)
+	username VARCHAR(30) NOT NULL UNIQUE
+	password VARCHAR(30) NOT NULL
+	age INT
+	email VARCHAR(50) NOT NULL UNIQUE
+	classesID INT
+	PRIMARY KEY (id)
+	FOREIGN KEY (classesID) REFERENCES lesson(id)
+);
+
+CREATE TABLE admin (
+	id INT NOT NULL UNIQUE
+	fName VARCHAR(50)
+	lName VARCHAR(50)
+	username VARCHAR(30) NOT NULL UNIQUE
+	password VARCHAR(30) NOT NULL
+	email VARCHAR(50) NOT NULL UNIQUE
+	organization INT NOT NULL UNIQUE
+	PRIMARY KEY (id)
+	FOREIGN KEY (organization) REFERENCES organization(id)
+);
+
+CREATE TABLE organization (
+	id INT NOT NULL UNIQUE
+	name VARCHAR(100) NOT NULL
+	address VARCHAR(100) NOT NULL
+	town VARCHAR(50) NOT NULL
+	state VARCHAR(50) NOT NULL
+	PRIMARY KEY (id)
+);
+CREATE TABLE instructors (
+	id INT NOT NULL UNIQUE
+	fName VARCHAR(50)
+	lName VARCHAR(50)
+	username VARCHAR(30) NOT NULL UNIQUE
+	password VARCHAR(30) NOT NULL
+	email VARCHAR(50) NOT NULL UNIQUE
+	classes VARCHAR(100) NOT NULL UNIQUE
+	PRIMARY KEY (id)
+	FOREIGN KEY (classes) REFERENCES lesson(id)
+);
+
+CREATE TABLE lesson (
+	id INT NOT NULL UNIQUE
+	name VARCHAR(50) NOT NULL
+	startDate DATETIME NOT NULL
+	endDate DATETIME NOT NULL
+	startTime DATETIME NOT NULL
+	endTime DATETIME NOT NULL
+	day DATETIME NOT NULL
+	contact VARCHAR(50) NOT NULL
+	level VARCHAR(20)
+	location VARCHAR(60) NOT NULL
+	organization VARCHAR(100) NOT NULL
+	instructor VARCHAR(50) NOT NULL
+	registered INT
+	PRIMARY KEY (id)
+	FOREIGN KEY (contact) REFERENCES admin(email)
+	FOREIGN KEY (registered) REFERENCES users(id)
+	FOREIGN KEY (instructor) REFERENCES instructor(fname)
+);
+
