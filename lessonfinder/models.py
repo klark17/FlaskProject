@@ -7,6 +7,16 @@ lessons = db.Table('lessons',
                    db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id'))
                    )
 
+organized = db.Table('organized',
+                     db.Column('adminId', db.Integer, db.ForeignKey('admin.id')),
+                     db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id')),
+                     )
+
+hosting = db.Table('hosting',
+                   db.Column('organizationId', db.Integer, db.ForeignKey('organization.id')),
+                   db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id')),
+                   )
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -29,8 +39,8 @@ class Admin(db.Model):
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    organization = db.relationship('Organization', uselist=False, backref='administrator')
-    # lessons = db.relationship('Lesson', backref='organizer', lazy=True)
+    organization = db.relationship('Organization', uselist=False, backref='admin')
+    lessons = db.relationship('Lesson', secondary=organized, backref=db.backref('contactEmail', lazy='dynamic'))
 
     def __repr__(self):
         return f"Admin('{self.username}', '{self.email}')"
@@ -43,7 +53,7 @@ class Instructor(db.Model):
     username = db.Column(db.String(30), unique=True, nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    # classes = db.relationship('Lesson', backref='teacher', lazy=True)
+    classes = db.relationship('Lesson', backref='teacher', lazy=True)
 
     def __repr__(self):
         return f"Instructor('{self.username}', '{self.email}')"
@@ -55,7 +65,8 @@ class Organization(db.Model):
     address = db.Column(db.String(50), nullable=False)
     town = db.Column(db.String(30), unique=True, nullable=False)
     state = db.Column(db.String(50), unique=True, nullable=False)
-    admin = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    lessons = db.relationship('Lesson', backref='organizer', lazy=True)
+    adminId = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
 
 
 class Lesson(db.Model):
@@ -69,10 +80,8 @@ class Lesson(db.Model):
     email = db.Column(db.String(50), unique=True, nullable=False)
     level = db.Column(db.Integer)
     location = db.Column(db.String(50), nullable=False)
-    organization = db.Column(db.String(100), nullable=False)
+    organization = db.Column(db.String(50), db.ForeignKey('organization.id'), nullable=False)
     instructor = db.Column(db.String(50), db.ForeignKey('instructor.id'), nullable=False)
-    contactEmail = db.Column(db.String(50), db.ForeignKey('admin.id'), nullable=False)
-    # registered = db.relationship('User', backref='registered_users', lazy=True)
     # for many-to-many: https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
     def __repr__(self):

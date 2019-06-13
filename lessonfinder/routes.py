@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect
-from lessonfinder import app
+from lessonfinder import app, db
 from lessonfinder.form import RegistrationForm, LoginForm, SearchForm
 from lessonfinder.models import User, Admin, Instructor, Lesson
 
@@ -36,8 +36,13 @@ def about():
 def signup():
     form = RegistrationForm()
     if form.validate_on_submit():
+        # hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, age=form.age.data,
+                    username=form.username.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
     return render_template('signup_page.html', title='Sign Up', form=form)
 
 
