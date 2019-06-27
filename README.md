@@ -1,2 +1,1 @@
-"# FlaskProject" 
-This is a project designed for thesis research currently in progress. 
+This is a Flask project designed for thesis research and is currently in progress. 
