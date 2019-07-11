@@ -1,23 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db
-from lessonfinder.form import RegistrationForm, LoginForm, SearchForm
+from lessonfinder.form import RegistrationForm, LoginForm, SearchForm, LessonForm
 from lessonfinder.models import User, Admin, Instructor, Lesson
 from flask_login import login_user, current_user, logout_user, login_required
-
-posts = [
-    {
-        'author': 'Corey Schafer',
-        'title': 'Blog Post 1',
-        'content': 'First post content',
-        'date_posted': 'April 20, 2018'
-    },
-    {
-        'author': 'Jane Doe',
-        'title': 'Blog Post 2',
-        'content': 'Second post content',
-        'date_posted': 'April 21, 2018'
-    }
-]
 
 
 # helper table for many-to-many relationships
@@ -90,3 +75,15 @@ def profile():
     # if form.validate_on_submit():
     #     return render_modal("modal")
     return render_template('profile.html', title="Profile")
+
+
+@app.route("/lesson/new", methods=['GET', 'POST'])
+@login_required
+def new_lesson():
+    form = LessonForm()
+    if form.validate_on_submit():
+        flash('The lesson has been created!', 'success')
+        return redirect(url_for('profile'))
+    return render_template('create_lesson.html', title="New Lesson")
+
+

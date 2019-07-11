@@ -42,3 +42,18 @@ class SearchForm(FlaskForm):
 	submit = SubmitField('Search')
 
 
+class LessonForm(FlaskForm):
+	name = StringField('Name')
+	startDate = DateTimeField('Start Date')
+	endDate = DateTimeField('End Date')
+	startTime = DateTimeField('Start Time')
+	endTime = DateTimeField('End Time')
+	day = StringField('Day of the Week')
+	email = StringField('Contact Email')
+	level = StringField('Level')
+	location = StringField('Location')
+	organization = StringField('Organization')
+	instructor = StringField('Instruction')
+	submit = SubmitField('Create Lesson')
+
+
