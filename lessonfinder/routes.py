@@ -77,13 +77,13 @@ def profile():
     return render_template('profile.html', title="Profile")
 
 
-@app.route("/lesson/new", methods=['GET', 'POST'])
+@app.route("/new_lesson/new", methods=['GET', 'POST'])
 @login_required
 def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
         flash('The lesson has been created!', 'success')
         return redirect(url_for('profile'))
-    return render_template('create_lesson.html', title="New Lesson")
+    return render_template('create_lesson.html', title="New Lesson", form=form)
 
 
