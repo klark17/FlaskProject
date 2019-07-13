@@ -78,8 +78,10 @@ class Organization(db.Model):
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    startDate = db.Column(db.DateTime, nullable=False, default=date(2019, 7, 1))
-    endDate = db.Column(db.DateTime, nullable=False, default=date(2019, 8, 19))
+    startMonth = db.Column(db.String(20), nullable=False)
+    startDate = db.Column(db.Integer, nullable=False)
+    endMonth = db.Column(db.String(20), nullable=False)
+    endDate = db.Column(db.Integer, nullable=False)
     startTime = db.Column(db.DateTime, nullable=False, default=time(6, 0, 0))
     endTime = db.Column(db.DateTime, nullable=False, default=time(7, 0, 0))
     day = db.Column(db.String(9), nullable=False)

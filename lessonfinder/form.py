@@ -45,13 +45,22 @@ class SearchForm(FlaskForm):
 class LessonForm(FlaskForm):
 	name = StringField('Name')
 	type = StringField('Type')
-	startDate = StringField('Start Date') #DateTimeField('Start Date')
-	endDate = StringField('End Date') #DateTimeField('End Date')
+	startMonth = SelectField('Start Month', choices=[('text', 'January'), ('text', 'February'), ('text', 'March'),
+							('text', 'April'), ('text', 'May'), ('text', 'June'), ('text', 'July'), ('text', 'August'),
+							('text', 'September'), ('text', 'October'), ('text', 'November'), ('text', 'December')])
+	startDate = IntegerField('Start Date')
+	endMonth = SelectField('Start Date', choices=[('text', 'January'), ('text', 'February'), ('text', 'March'),
+							('text', 'April'), ('text', 'May'), ('text', 'June'), ('text', 'July'), ('text', 'August'),
+							('text', 'September'), ('text', 'October'), ('text', 'November'), ('text', 'December')])
+	endDate = IntegerField('End Date')
 	startTime = StringField('Start Time') #DateTimeField('Start Time')
 	endTime = StringField('End Time') #DateTimeField('End Time')
-	day = StringField('Day of the Week')
+	day = SelectField('Level', choices=[('text', 'Monday'), ('text', 'Tuesday'), ('text', 'Wednesday'),
+										('text', 'Thursday'), ('text', 'Friday'), ('text', 'Saturday'),
+										('text', 'Sunday')])
 	email = StringField('Contact Email')
-	level = StringField('Level')
+	level = SelectField('Level', choices=[('text', 'Beginner/Levels 1-2'),
+										('text', 'Intermediate/Levels 3-5'), ('text', 'Advanced/Levels 6+')])
 	location = StringField('Location')
 	organization = StringField('Organization')
 	instructor = StringField('Instructor')
