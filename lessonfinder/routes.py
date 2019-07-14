@@ -57,6 +57,7 @@ def logout():
 
 @app.route("/results")
 def results():
+
     return render_template('search_results.html', title='Results')
 
 
@@ -82,6 +83,12 @@ def profile():
 def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
+        lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
+                        startTime=form.startTime.data, endTime=form.endTime.data, day=form.day.data,
+                        email=form.email.data, level=form.level.data, location=form.location.data,
+                        organization=form.organization.data, instructor=form.instructor.data)
+        db.session.add(lesson)
+        db.session.commit()
         flash('The lesson has been created!', 'success')
         return redirect(url_for('profile'))
     return render_template('create_lesson.html', title="New Lesson", form=form)
