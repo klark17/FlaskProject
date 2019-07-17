@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db
 from lessonfinder.form import RegistrationForm, LoginForm, SearchForm, LessonForm
-from lessonfinder.models import User, Admin, Instructor, Lesson
+from lessonfinder.models import User, Admin, Lesson
 from flask_login import login_user, current_user, logout_user, login_required
 
 
@@ -39,13 +39,20 @@ def login():
         return redirect(url_for('profile'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user and user.password == form.password.data:
-            login_user(user, remember=form.remember.data)
-            flash('You have been logged in!', 'success')
-            return redirect(url_for('profile'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+        if db.session.query(User.id).filter_by(username=form.username.data).scalar():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user and user.password == form.password.data:
+                login_user(user, remember=form.remember.data)
+                flash('You have been logged in!', 'success')
+                return redirect(url_for('profile'))
+            else:
+                flash('Login Unsuccessful. Please check username and password', 'danger')
+        elif db.session.query(Admin.id).filter_by(username=form.username.data).scalar():
+            admin = Admin.query.filter_by(username=form.username.data).first()
+            if admin and admin.password == form.password.data:
+                login_user(admin, remember=form.remember.data)
+                flash('You have been logged in as an administrator!', 'success')
+                return redirect(url_for('admin_profile'))
     return render_template('login_page.html', title='Login', form=form)
 
 
@@ -76,6 +83,15 @@ def profile():
     # if form.validate_on_submit():
     #     return render_modal("modal")
     return render_template('profile.html', title="Profile")
+
+
+@app.route("/admin_profile")
+@login_required
+def admin_profile():
+    # form = SearchForm()
+    # if form.validate_on_submit():
+    #     return render_modal("modal")
+    return render_template('admin_profile.html', title="Admin Profile")
 
 
 @app.route("/new_lesson/new", methods=['GET', 'POST'])

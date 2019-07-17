@@ -38,7 +38,7 @@ class User(db.Model, UserMixin):
         return f"User('{self.fName}', '{self.username}', '{self.email}')"
 
 
-class Admin(db.Model):
+class Admin(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     fName = db.Column(db.String(50), nullable=False)
     lName = db.Column(db.String(50), nullable=False)
@@ -50,19 +50,6 @@ class Admin(db.Model):
 
     def __repr__(self):
         return f"Admin('{self.username}', '{self.email}')"
-
-
-class Instructor(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    fName = db.Column(db.String(50), nullable=False)
-    lName = db.Column(db.String(50), nullable=False)
-    username = db.Column(db.String(30), unique=True, nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
-    classes = db.relationship('Lesson', backref='teacher', lazy=True)
-
-    def __repr__(self):
-        return f"Instructor('{self.username}', '{self.email}')"
 
 
 class Organization(db.Model):
@@ -87,7 +74,7 @@ class Lesson(db.Model):
     level = db.Column(db.Integer)
     location = db.Column(db.String(50), nullable=False)
     organization = db.Column(db.String(50), db.ForeignKey('organization.id'), nullable=False)
-    instructor = db.Column(db.String(50), db.ForeignKey('instructor.id'), nullable=False)
+    instructor = db.Column(db.String(50), nullable=False)
     # for many-to-many: https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
     def __repr__(self):

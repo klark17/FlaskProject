@@ -1,0 +1,25 @@
+{% extends "layout2.html" %}
+{% block content %}
+    <div class="content-section">
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Profile Picture</h2>
+            </div>
+            <div class="col-md-8">
+                <h2 class="list-group-item">Information</h2>
+                <li class="list-group-item" name="fName">First Name: {{ current_user.fName }}</li>
+                <li class="list-group-item" name="lName">Last Name: {{ current_user.lName }}</li>
+                <li class="list-group-item" name="email">Email: {{ current_user.email }}</li>
+                <li class="list-group-item" name="email">Organization: {{ current_user.organization.name }}</li>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Classes</h2>
+                <!--if not registered for classes, show message, else show registered classes-->
+                <h3>Add, update, and delete classes.</h3>
+                <button><a class="nav-item nav-link" href="{{ url_for('new_lesson') }}">New Lesson</a></button>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
