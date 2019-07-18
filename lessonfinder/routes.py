@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db
-from lessonfinder.form import RegistrationForm, LoginForm, SearchForm, LessonForm
-from lessonfinder.models import User, Admin, Lesson
+from lessonfinder.form import RegistrationForm, LoginForm, SearchForm, LessonForm, OrganizationForm
+from lessonfinder.models import User, Admin, Lesson, Organization
 from flask_login import login_user, current_user, logout_user, login_required
 
 
@@ -108,5 +108,25 @@ def new_lesson():
         flash('The lesson has been created!', 'success')
         return redirect(url_for('profile'))
     return render_template('create_lesson.html', title="New Lesson", form=form)
+
+
+@app.route("/organization", methods=['GET', 'POST'])
+@login_required
+def add_organization():
+    form = OrganizationForm()
+    if form.validate_on_submit():
+        organization = Organization(name=form.name.data, address=form.address.data, town=form.town.data,
+                                    state=form.state.data)
+        db.session.add(organization)
+        db.session.commit()
+        flash('You have been added to a new organization', 'success')
+        return redirect(url_for('admin_profile'))
+    return render_template('add_organization.html', title="Join an Organization", form=form)
+
+
+#possibly help with determining if admin is associated with an organization
+#if the user is not associated with an org. then it will make the add org button available
+#if associated it will display the name of the organization in the admin profile
+#db.session.query(Admin).filter(Admin.id == Organization.adminId).filter(Admin.name == 'dilbert')
 
 

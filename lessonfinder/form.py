@@ -69,3 +69,10 @@ class LessonForm(FlaskForm):
 	submit = SubmitField('Create Lesson')
 
 
+class OrganizationForm(FlaskForm):
+	name = StringField('Name of Organization')
+	address = StringField('Address')
+	town = StringField('Town/City')
+	state = StringField('State')
+
+
