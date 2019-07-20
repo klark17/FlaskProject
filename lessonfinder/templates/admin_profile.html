@@ -18,13 +18,13 @@
                 <h2>Classes</h2>
                 <!--if not registered for classes, show message, else show registered classes-->
                 <h3>Add, update, and delete classes.</h3>
-                {% for lesson in lessons %}
-                    <article class="media content-section">
-                        <div class="media-body">
-                            <li class="article-content">{{ lesson.name }}</li>
-                        </div>
-                    </article>
-                {% endfor %}
+{#                {% for lesson in admin.lessons %}#}
+{#                    <article class="media content-section">#}
+{#                        <div class="media-body">#}
+{#                            <li class="article-content">{{ lesson.name }}</li>#}
+{#                        </div>#}
+{#                    </article>#}
+{#                {% endfor %}#}
                 <button><a class="nav-item nav-link" href="{{ url_for('new_lesson') }}">New Lesson</a></button>
             </div>
         </div>

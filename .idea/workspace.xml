@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4282a7cf-e9b8-4f32-a44a-bd4ab2bab1ea" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lessonfinder/form.py" beforeDir="false" afterPath="$PROJECT_DIR$/lessonfinder/form.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lessonfinder/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/lessonfinder/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lessonfinder/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/lessonfinder/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lessonfinder/site.db" beforeDir="false" afterPath="$PROJECT_DIR$/lessonfinder/site.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lessonfinder/templates/admin_profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/lessonfinder/templates/admin_profile.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lessonfinder/routes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-913">
-              <caret line="56" column="61" lean-forward="true" selection-start-line="56" selection-start-column="61" selection-end-line="56" selection-end-column="61" />
+            <state relative-caret-position="311">
+              <caret line="56" column="57" lean-forward="true" selection-start-line="56" selection-end-line="57" />
               <folding>
                 <element signature="e#0#68#0" expanded="true" />
               </folding>
@@ -46,7 +43,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lessonfinder/templates/layout.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-145">
+            <state relative-caret-position="952">
               <caret line="56" column="47" selection-start-line="56" selection-start-column="47" selection-end-line="56" selection-end-column="47" />
             </state>
           </provider>
@@ -55,7 +52,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lessonfinder/templates/layout2.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-298">
+            <state relative-caret-position="17">
               <caret line="33" column="82" selection-start-line="33" selection-start-column="82" selection-end-line="33" selection-end-column="82" />
             </state>
           </provider>
@@ -64,16 +61,16 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lessonfinder/templates/admin_profile.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="25" selection-start-line="26" selection-start-column="25" selection-end-line="26" selection-end-column="25" />
+            <state relative-caret-position="294">
+              <caret line="24" column="34" lean-forward="true" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lessonfinder/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
+            <state relative-caret-position="549">
               <caret line="67" column="48" lean-forward="true" selection-start-line="67" selection-start-column="48" selection-end-line="67" selection-end-column="48" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
@@ -85,8 +82,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lessonfinder/form.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="583">
-              <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
+            <state relative-caret-position="1105">
+              <caret line="69" selection-start-line="69" selection-end-line="69" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -156,8 +153,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-356" />
-    <option name="y" value="-20" />
+    <option name="x" value="-357" />
+    <option name="y" value="-21" />
     <option name="width" value="1890" />
     <option name="height" value="960" />
   </component>
@@ -257,7 +254,8 @@
       <workItem from="1563324805152" duration="4311000" />
       <workItem from="1563409527137" duration="4526000" />
       <workItem from="1563573759341" duration="6496000" />
-      <workItem from="1563636672350" duration="8672000" />
+      <workItem from="1563636672350" duration="8771000" />
+      <workItem from="1563656637019" duration="462000" />
     </task>
     <task id="LOCAL-00001" summary="added database classes">
       <created>1560201073427</created>
@@ -350,11 +348,18 @@
       <option name="project" value="LOCAL" />
       <updated>1563416726038</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="fixed database issue, created viewing lessons issue">
+      <created>1563656317157</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1563656317157</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="90180000" />
+    <option name="totallyTimeSpent" value="90741000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -471,7 +476,8 @@
     <MESSAGE value="reformatted dates from strings to python datetime" />
     <MESSAGE value="added admin profile page and edited login route" />
     <MESSAGE value="organization is not working, attempting fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="organization is not working, attempting fixes" />
+    <MESSAGE value="fixed database issue, created viewing lessons issue" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed database issue, created viewing lessons issue" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/templates/search_lessons.html" />
@@ -547,16 +553,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lessonfinder/form.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="583">
-          <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lessonfinder/templates/signup_page.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -564,43 +560,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lessonfinder/routes.py">
+    <entry file="file://$PROJECT_DIR$/lessonfinder/templates/layout.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-913">
-          <caret line="56" column="61" lean-forward="true" selection-start-line="56" selection-start-column="61" selection-end-line="56" selection-end-column="61" />
-          <folding>
-            <element signature="e#0#68#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="952">
+          <caret line="56" column="47" selection-start-line="56" selection-start-column="47" selection-end-line="56" selection-end-column="47" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lessonfinder/templates/layout.html">
+    <entry file="file://$PROJECT_DIR$/lessonfinder/form.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-145">
-          <caret line="56" column="47" selection-start-line="56" selection-start-column="47" selection-end-line="56" selection-end-column="47" />
+        <state relative-caret-position="1105">
+          <caret line="69" selection-start-line="69" selection-end-line="69" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lessonfinder/templates/layout2.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-298">
+        <state relative-caret-position="17">
           <caret line="33" column="82" selection-start-line="33" selection-start-column="82" selection-end-line="33" selection-end-column="82" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lessonfinder/templates/admin_profile.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="25" selection-start-line="26" selection-start-column="25" selection-end-line="26" selection-end-column="25" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lessonfinder/models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
+        <state relative-caret-position="549">
           <caret line="67" column="48" lean-forward="true" selection-start-line="67" selection-start-column="48" selection-end-line="67" selection-end-column="48" />
           <folding>
             <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lessonfinder/templates/admin_profile.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="24" column="34" lean-forward="true" selection-start-line="24" selection-start-column="34" selection-end-line="24" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lessonfinder/routes.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="56" column="57" lean-forward="true" selection-start-line="56" selection-end-line="57" />
+          <folding>
+            <element signature="e#0#68#0" expanded="true" />
           </folding>
         </state>
       </provider>

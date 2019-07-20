@@ -54,7 +54,7 @@ def login():
                 login_user(admin, remember=form.remember.data)
                 org = admin.organization
                 flash('You have been logged in as an administrator!', 'success')
-                lessons = Lesson.query.filter(email=admin.id)
+                # lessons = Admin.query.filter_by(lessons=admin.lessons)
                 return render_template('admin_profile.html', name=org.name, lessons=lessons)
     return render_template('login_page.html', title='Login', form=form)
 
