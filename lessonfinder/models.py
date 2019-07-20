@@ -39,6 +39,7 @@ class User(db.Model, UserMixin):
 
 
 class Admin(db.Model, UserMixin):
+    __tablename__ = 'admin'
     id = db.Column(db.Integer, primary_key=True)
     fName = db.Column(db.String(50), nullable=False)
     lName = db.Column(db.String(50), nullable=False)
@@ -46,31 +47,32 @@ class Admin(db.Model, UserMixin):
     email = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     organization = db.relationship('Organization', uselist=False, backref='admin')
-    lessons = db.relationship('Lesson', secondary=organized, backref=db.backref('contactEmail', lazy='dynamic'))
+    lessons = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
 
     def __repr__(self):
-        return f"Admin('{self.username}', '{self.email}')"
+        return f"Admin('{self.username}', '{self.fName}', '{self.lName}', '{self.email}')"
 
 
 class Organization(db.Model):
+    __tablename__ = 'organization'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(50), nullable=False)
     town = db.Column(db.String(30), unique=True, nullable=False)
     state = db.Column(db.String(50), unique=True, nullable=False)
     lessons = db.relationship('Lesson', backref='organizer', lazy=True)
-    adminId = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
+    adminId = db.Column(db.Integer, db.ForeignKey('admin.id'))
 
 
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    startDate = db.Column(db.DateTime, nullable=False)
-    endDate = db.Column(db.DateTime, nullable=False)
-    startTime = db.Column(db.DateTime, nullable=False)
-    endTime = db.Column(db.DateTime, nullable=False)
+    startDate = db.Column(db.Date, nullable=False)
+    endDate = db.Column(db.Date, nullable=False)
+    startTime = db.Column(db.Time, nullable=False)
+    endTime = db.Column(db.Time, nullable=False)
     day = db.Column(db.String(9), nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
     level = db.Column(db.Integer)
     location = db.Column(db.String(50), nullable=False)
     organization = db.Column(db.String(50), db.ForeignKey('organization.id'), nullable=False)

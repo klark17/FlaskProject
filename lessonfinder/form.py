@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateTimeField, IntegerField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms_components import TimeField, DateField
 from lessonfinder.models import User
 
 
@@ -15,12 +16,12 @@ class RegistrationForm(FlaskForm):
 	submit = SubmitField('Sign Up')
 
 	def validate_username(self, username):
-		user = User.query.filter_by(username=username.data)
+		user = User.query.filter_by(username=username.data).first()
 		if user:
 			raise ValidationError('Username is taken. Choose another.')
 
 	def validate_email(self, email):
-		user = User.query.filter_by(email=email.data)
+		user = User.query.filter_by(email=email.data).first()
 		if user:
 			raise ValidationError('Email is taken. Choose another.')
 
@@ -47,14 +48,6 @@ class LessonForm(FlaskForm):
 	type = StringField('Type')
 	startDate = DateField('Start Date', format='%m/%d/%Y', render_kw={'placeholder': 'MM/DD/YYYY'})
 	endDate = DateField('End Date', format='%m/%d/%Y', render_kw={'placeholder': 'MM/DD/YYYY'})
-	# startMonth = SelectField('Start Month', choices=[('text', 'January'), ('text', 'February'), ('text', 'March'),
-	# 						('text', 'April'), ('text', 'May'), ('text', 'June'), ('text', 'July'), ('text', 'August'),
-	# 						('text', 'September'), ('text', 'October'), ('text', 'November'), ('text', 'December')])
-	# startDate = IntegerField('Start Date')
-	# endMonth = SelectField('End Month', choices=[('text', 'January'), ('text', 'February'), ('text', 'March'),
-	# 						('text', 'April'), ('text', 'May'), ('text', 'June'), ('text', 'July'), ('text', 'August'),
-	# 						('text', 'September'), ('text', 'October'), ('text', 'November'), ('text', 'December')])
-	# endDate = IntegerField('End Date')
 	startTime = DateTimeField('Start Time', format='%H:%M', render_kw={'placeholder': 'HH:MM'})
 	endTime = DateTimeField('End Time', format='%H:%M', render_kw={'placeholder': 'HH:MM'})
 	day = SelectField('Day of the Week', choices=[('text', 'Monday'), ('text', 'Tuesday'), ('text', 'Wednesday'),
@@ -74,5 +67,14 @@ class OrganizationForm(FlaskForm):
 	address = StringField('Address')
 	town = StringField('Town/City')
 	state = StringField('State')
+
+	# startMonth = SelectField('Start Month', choices=[('text', 'January'), ('text', 'February'), ('text', 'March'),
+	# 						('text', 'April'), ('text', 'May'), ('text', 'June'), ('text', 'July'), ('text', 'August'),
+	# 						('text', 'September'), ('text', 'October'), ('text', 'November'), ('text', 'December')])
+	# startDate = IntegerField('Start Date')
+	# endMonth = SelectField('End Month', choices=[('text', 'January'), ('text', 'February'), ('text', 'March'),
+	# 						('text', 'April'), ('text', 'May'), ('text', 'June'), ('text', 'July'), ('text', 'August'),
+	# 						('text', 'September'), ('text', 'October'), ('text', 'November'), ('text', 'December')])
+	# endDate = IntegerField('End Date')
 
 

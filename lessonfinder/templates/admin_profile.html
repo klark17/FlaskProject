@@ -10,9 +10,7 @@
                 <li class="list-group-item" name="fName">First Name: {{ current_user.fName }}</li>
                 <li class="list-group-item" name="lName">Last Name: {{ current_user.lName }}</li>
                 <li class="list-group-item" name="email">Email: {{ current_user.email }}</li>
-                <li class="list-group-item" name="email"><a class="nav-item nav-link"
-                                                            href="{{ url_for('add_organization') }}">Add</a>
-Organization: {{ current_user.organization.name }}</li>
+                <li class="list-group-item" name="email">Organization: {{ name }}</li>
             </div>
         </div>
         <div class="row">
@@ -20,6 +18,13 @@ Organization: {{ current_user.organization.name }}</li>
                 <h2>Classes</h2>
                 <!--if not registered for classes, show message, else show registered classes-->
                 <h3>Add, update, and delete classes.</h3>
+                {% for lesson in lessons %}
+                    <article class="media content-section">
+                        <div class="media-body">
+                            <li class="article-content">{{ lesson.name }}</li>
+                        </div>
+                    </article>
+                {% endfor %}
                 <button><a class="nav-item nav-link" href="{{ url_for('new_lesson') }}">New Lesson</a></button>
             </div>
         </div>

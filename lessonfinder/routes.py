@@ -43,16 +43,19 @@ def login():
             user = User.query.filter_by(username=form.username.data).first()
             if user and user.password == form.password.data:
                 login_user(user, remember=form.remember.data)
+                next_page = request.args.get('next')
                 flash('You have been logged in!', 'success')
-                return redirect(url_for('profile'))
+                return redirect(next_page) if next_page else redirect(url_for('profile'))
             else:
                 flash('Login Unsuccessful. Please check username and password', 'danger')
         elif db.session.query(Admin.id).filter_by(username=form.username.data).scalar():
             admin = Admin.query.filter_by(username=form.username.data).first()
             if admin and admin.password == form.password.data:
                 login_user(admin, remember=form.remember.data)
+                org = admin.organization
                 flash('You have been logged in as an administrator!', 'success')
-                return redirect(url_for('admin_profile'))
+                lessons = Lesson.query.filter(email=admin.id)
+                return render_template('admin_profile.html', name=org.name, lessons=lessons)
     return render_template('login_page.html', title='Login', form=form)
 
 
@@ -64,7 +67,6 @@ def logout():
 
 @app.route("/results")
 def results():
-
     return render_template('search_results.html', title='Results')
 
 
