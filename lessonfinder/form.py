@@ -46,10 +46,10 @@ class SearchForm(FlaskForm):
 class LessonForm(FlaskForm):
 	name = StringField('Name')
 	type = StringField('Type')
-	startDate = DateField('Start Date', format='%m/%d/%Y', render_kw={'placeholder': 'MM/DD/YYYY'})
-	endDate = DateField('End Date', format='%m/%d/%Y', render_kw={'placeholder': 'MM/DD/YYYY'})
-	startTime = DateTimeField('Start Time', format='%H:%M', render_kw={'placeholder': 'HH:MM'})
-	endTime = DateTimeField('End Time', format='%H:%M', render_kw={'placeholder': 'HH:MM'})
+	startDate = DateField('Start Date', render_kw={'placeholder': 'MM/DD/YYYY'})
+	endDate = DateField('End Date', render_kw={'placeholder': 'MM/DD/YYYY'})
+	startTime = TimeField('Start Time', render_kw={'placeholder': 'HH:MM'})
+	endTime = TimeField('End Time', render_kw={'placeholder': 'HH:MM'})
 	day = SelectField('Day of the Week', choices=[('text', 'Monday'), ('text', 'Tuesday'), ('text', 'Wednesday'),
 										('text', 'Thursday'), ('text', 'Friday'), ('text', 'Saturday'),
 										('text', 'Sunday')])
@@ -57,7 +57,7 @@ class LessonForm(FlaskForm):
 	level = SelectField('Level', choices=[('text', 'Beginner/Levels 1-2'),
 										('text', 'Intermediate/Levels 3-5'), ('text', 'Advanced/Levels 6+')])
 	location = StringField('Location')
-	organization = StringField('Organization')
+	# organization = StringField('Organization')
 	instructor = StringField('Instructor')
 	submit = SubmitField('Create Lesson')
 

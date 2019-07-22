@@ -9,6 +9,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 # currently not working
 # classes = db.Table('classes', db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
 #                    db.Column('lesson_id', db.Integer, db.ForeignKey('lesson.id'), primary_key=True))
+# ****https://flask-user.readthedocs.io/en/latest/basic_app.html: can help with admin roles
 
 
 @app.route("/")
@@ -54,8 +55,7 @@ def login():
                 login_user(admin, remember=form.remember.data)
                 org = admin.organization
                 flash('You have been logged in as an administrator!', 'success')
-                # lessons = Admin.query.filter_by(lessons=admin.lessons)
-                return render_template('admin_profile.html', name=org.name, lessons=lessons)
+                return render_template('admin_profile.html', name=org.name, lessons=admin.lessons)
     return render_template('login_page.html', title='Login', form=form)
 
 
@@ -101,15 +101,39 @@ def admin_profile():
 def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
+        org = current_user.organization
         lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
                         startTime=form.startTime.data, endTime=form.endTime.data, day=form.day.data,
-                        email=form.email.data, level=form.level.data, location=form.location.data,
-                        organization=form.organization.data, instructor=form.instructor.data)
+                        contactEmail=current_user.email, level=form.level.data, location=form.location.data,
+                        organization=org.name, instructor=form.instructor.data)
         db.session.add(lesson)
         db.session.commit()
         flash('The lesson has been created!', 'success')
         return redirect(url_for('profile'))
     return render_template('create_lesson.html', title="New Lesson", form=form)
+
+
+# def format_datetime(startDate, endDate, startTime, endTime):
+#     startDate_temp = startDate.split("/")
+#     sYear = int(startDate_temp[2])
+#     sMonth = int(startDate_temp[0])
+#     sDay = int(startDate_temp[1])
+#     sDate = (sYear, sMonth, sDay)
+#     endDate_temp = endDate.split("/")
+#     eYear = int(endDate_temp[2])
+#     eMonth = int(endDate_temp[0])
+#     eDay = int(endDate_temp[1])
+#     eDate = (eYear, eMonth, eDay)
+#     startTime_temp = startTime.split(":")
+#     sHour = int(startTime_temp[0])
+#     sMin = int(startTime_temp[1])
+#     sTime = (sHour, sMin)
+#     endTime_temp = endTime.split(":")
+#     eHour = int(endTime_temp[0])
+#     eMin = int(endTime_temp[1])
+#     eTime = (eHour, eMin)
+#
+#     return sDate, eDate, sTime, eTime
 
 
 @app.route("/organization", methods=['GET', 'POST'])

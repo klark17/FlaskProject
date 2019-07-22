@@ -1,4 +1,3 @@
-from datetime import datetime, date, time
 from lessonfinder import db, login_manager
 from flask_login import UserMixin
 
@@ -71,7 +70,6 @@ class Lesson(db.Model):
     endDate = db.Column(db.Date, nullable=False)
     startTime = db.Column(db.Time, nullable=False)
     endTime = db.Column(db.Time, nullable=False)
-    day = db.Column(db.String(9), nullable=False)
     email = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
     level = db.Column(db.Integer)
     location = db.Column(db.String(50), nullable=False)
