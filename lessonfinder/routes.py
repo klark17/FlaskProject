@@ -56,6 +56,8 @@ def login():
                 org = admin.organization
                 flash('You have been logged in as an administrator!', 'success')
                 return render_template('admin_profile.html', name=org.name, lessons=admin.lessons)
+            else:
+                flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login_page.html', title='Login', form=form)
 
 
@@ -81,18 +83,12 @@ def search():
 @app.route("/profile")
 @login_required
 def profile():
-    # form = SearchForm()
-    # if form.validate_on_submit():
-    #     return render_modal("modal")
     return render_template('profile.html', title="Profile")
 
 
 @app.route("/admin_profile")
 @login_required
 def admin_profile():
-    # form = SearchForm()
-    # if form.validate_on_submit():
-    #     return render_modal("modal")
     return render_template('admin_profile.html', title="Admin Profile")
 
 
@@ -102,38 +98,19 @@ def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
         org = current_user.organization
+        admin = Admin.query.filter_by(organization=org)
         lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
                         startTime=form.startTime.data, endTime=form.endTime.data, day=form.day.data,
-                        contactEmail=current_user.email, level=form.level.data, location=form.location.data,
+                        contactEmail=admin.id, level=form.level.data, location=form.location.data,
                         organization=org.name, instructor=form.instructor.data)
+        admin.lessons = [lesson]
         db.session.add(lesson)
         db.session.commit()
         flash('The lesson has been created!', 'success')
-        return redirect(url_for('profile'))
+        return redirect(url_for('admin_profile'))
+    else:
+        flash('Unsuccessful. Please check all fields.', 'danger')
     return render_template('create_lesson.html', title="New Lesson", form=form)
-
-
-# def format_datetime(startDate, endDate, startTime, endTime):
-#     startDate_temp = startDate.split("/")
-#     sYear = int(startDate_temp[2])
-#     sMonth = int(startDate_temp[0])
-#     sDay = int(startDate_temp[1])
-#     sDate = (sYear, sMonth, sDay)
-#     endDate_temp = endDate.split("/")
-#     eYear = int(endDate_temp[2])
-#     eMonth = int(endDate_temp[0])
-#     eDay = int(endDate_temp[1])
-#     eDate = (eYear, eMonth, eDay)
-#     startTime_temp = startTime.split(":")
-#     sHour = int(startTime_temp[0])
-#     sMin = int(startTime_temp[1])
-#     sTime = (sHour, sMin)
-#     endTime_temp = endTime.split(":")
-#     eHour = int(endTime_temp[0])
-#     eMin = int(endTime_temp[1])
-#     eTime = (eHour, eMin)
-#
-#     return sDate, eDate, sTime, eTime
 
 
 @app.route("/organization", methods=['GET', 'POST'])
