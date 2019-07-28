@@ -12,6 +12,7 @@ login_manager.login_view = 'login'
 login_manager.login_message_category = 'info'
 
 from lessonfinder import routes
+
 # from flask_admin import Admin
 # from flask_admin.contrib.sqla import ModelView
 # from lessonfinder.models import User, Lesson

@@ -15,9 +15,16 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <h2>Classes Registered</h2>
+                <h2>Your classes.</h2>
                 <!--if not registered for classes, show message, else show registered classes-->
-                <h3>You are not registered for any classes</h3>
+                {% for lesson in lessons %}
+                    <article class="media content-section">
+                        <div class="media-body">
+                            <li class="article-content">{{ lesson.name }}</li>
+                        </div>
+                    </article>
+                {% endfor %}
+                <button><a class="nav-item nav-link" href="{{ url_for('search') }}">Search/Register</a></button>
             </div>
         </div>
     </div>

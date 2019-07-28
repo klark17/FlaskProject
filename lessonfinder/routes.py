@@ -68,15 +68,16 @@ def logout():
 
 
 @app.route("/results")
-def results():
-    return render_template('search_results.html', title='Results')
+def search_results(results):
+    return render_template('search_results.html', title='Results', results=[results])
 
 
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     form = SearchForm()
     if form.validate_on_submit():
-        return redirect(url_for('results'))
+        results = Lesson.query.filter_by(location=form.location.data).first_or_404()
+        return search_results(results)
     return render_template('search_lessons.html', title='Search', form=form)
 
 
