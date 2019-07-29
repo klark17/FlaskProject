@@ -57,8 +57,8 @@ class Organization(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(50), nullable=False)
-    town = db.Column(db.String(30), unique=True, nullable=False)
-    state = db.Column(db.String(50), unique=True, nullable=False)
+    town = db.Column(db.String(30), nullable=False)
+    state = db.Column(db.String(50), nullable=False)
     lessons = db.relationship('Lesson', backref='organizer', lazy=True)
     adminId = db.Column(db.Integer, db.ForeignKey('admin.id'))
 

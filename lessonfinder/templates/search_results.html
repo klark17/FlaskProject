@@ -7,8 +7,12 @@
             <div class="row">
                 <div class="col-md-4">
                     <li class="list-group-item">
-                        <button id="result">
                             {{ result.name }}
+                            {{ result.location }}
+                        <button id="register">
+                            <a class="nav-item nav-link" href="{{ url_for('register', result=result) }}">
+                                Register
+                            </a>
                         </button>
                     </li>
                 </div>

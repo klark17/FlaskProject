@@ -1,8 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db
-from lessonfinder.form import RegistrationForm, LoginForm, SearchForm, LessonForm, OrganizationForm
+from lessonfinder.form import LoginForm, SearchForm, LessonForm, OrganizationForm, SignupForm, RegistrationForm
 from lessonfinder.models import User, Admin, Lesson, Organization
 from flask_login import login_user, current_user, logout_user, login_required
+from sqlalchemy import or_
+from datetime import date, time
 
 
 # helper table for many-to-many relationships
@@ -22,7 +24,7 @@ def about():
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for('profile'))
-    form = RegistrationForm()
+    form = SignupForm()
     if form.validate_on_submit():
         # hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, age=form.age.data,
@@ -69,22 +71,40 @@ def logout():
 
 @app.route("/results")
 def search_results(results):
-    return render_template('search_results.html', title='Results', results=[results])
+    return render_template('search_results.html', title='Results', results=results)
 
 
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     form = SearchForm()
     if form.validate_on_submit():
-        results = Lesson.query.filter_by(location=form.location.data).first_or_404()
+        results = Lesson.query.filter(or_(Lesson.location == form.location.data,
+                                          Lesson.organization == form.organization.data,
+                                          Lesson.level == form.level.data))
         return search_results(results)
     return render_template('search_lessons.html', title='Search', form=form)
+
+
+# TODO: make this add the registered lesson to the user and the user to the lesson
+# https://stackoverflow.com/questions/27611216/how-to-pass-a-variable-between-flask-pages
+@app.route("/register")
+def register():
+    form = RegistrationForm()
+    result = request.args.get('result', None)
+    if form.validate_on_submit():
+        current_user.lessons.append(result)
+        db.session.commit()
+        flash(f'You have been registered!', 'success')
+        return redirect(url_for('profile'))
+    return render_template('register.html', title='Register', form=form, result=result)
 
 
 @app.route("/profile")
 @login_required
 def profile():
-    return render_template('profile.html', title="Profile")
+    if current_user.is_authenticated:
+        lessons = current_user.lessons
+    return render_template('profile.html', title="Profile", lessons=lessons)
 
 
 @app.route("/admin_profile")
@@ -98,19 +118,19 @@ def admin_profile():
 def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
-        org = current_user.organization
-        admin = Admin.query.filter_by(organization=org)
+        admin = Admin.query.first()
+        org = admin.organization
         lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
-                        startTime=form.startTime.data, endTime=form.endTime.data, day=form.day.data,
+                        startTime=form.startTime.data, endTime=form.endTime.data,
                         contactEmail=admin.id, level=form.level.data, location=form.location.data,
                         organization=org.name, instructor=form.instructor.data)
-        admin.lessons = [lesson]
+        admin.lessons.append(lesson)
         db.session.add(lesson)
         db.session.commit()
         flash('The lesson has been created!', 'success')
         return redirect(url_for('admin_profile'))
-    else:
-        flash('Unsuccessful. Please check all fields.', 'danger')
+    # else:
+    #     flash('Unsuccessful. Please check all fields.', 'danger')
     return render_template('create_lesson.html', title="New Lesson", form=form)
 
 

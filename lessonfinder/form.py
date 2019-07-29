@@ -5,7 +5,7 @@ from wtforms_components import TimeField, DateField
 from lessonfinder.models import User
 
 
-class RegistrationForm(FlaskForm):
+class SignupForm(FlaskForm):
 	fName = StringField('First Name', validators=[DataRequired()])
 	lName = StringField('Last Name', validators=[DataRequired()])
 	username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -68,13 +68,11 @@ class OrganizationForm(FlaskForm):
 	town = StringField('Town/City')
 	state = StringField('State')
 
-	# startMonth = SelectField('Start Month', choices=[('text', 'January'), ('text', 'February'), ('text', 'March'),
-	# 						('text', 'April'), ('text', 'May'), ('text', 'June'), ('text', 'July'), ('text', 'August'),
-	# 						('text', 'September'), ('text', 'October'), ('text', 'November'), ('text', 'December')])
-	# startDate = IntegerField('Start Date')
-	# endMonth = SelectField('End Month', choices=[('text', 'January'), ('text', 'February'), ('text', 'March'),
-	# 						('text', 'April'), ('text', 'May'), ('text', 'June'), ('text', 'July'), ('text', 'August'),
-	# 						('text', 'September'), ('text', 'October'), ('text', 'November'), ('text', 'December')])
-	# endDate = IntegerField('End Date')
+
+class RegistrationForm(FlaskForm):
+	name = StringField('Name of Participant')
+	contactEmail = StringField('Contact Email')
+	submit = SubmitField('Register')
+
 
 
