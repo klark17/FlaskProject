@@ -10,7 +10,7 @@
                             {{ result.name }}
                             {{ result.location }}
                         <button id="register">
-                            <a class="nav-item nav-link" href="{{ url_for('register', result=result) }}">
+                            <a class="nav-item nav-link" href="{{ url_for('register', lesson_id=result.id) }}">
                                 Register
                             </a>
                         </button>

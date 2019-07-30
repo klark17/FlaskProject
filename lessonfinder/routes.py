@@ -85,18 +85,16 @@ def search():
     return render_template('search_lessons.html', title='Search', form=form)
 
 
-# TODO: make this add the registered lesson to the user and the user to the lesson
-# https://stackoverflow.com/questions/27611216/how-to-pass-a-variable-between-flask-pages
-@app.route("/register")
-def register():
+@app.route("/register/<int:lesson_id>", methods=['GET', 'POST'])
+def register(lesson_id):
     form = RegistrationForm()
-    result = request.args.get('result', None)
+    lesson = Lesson.query.get_or_404(lesson_id)
     if form.validate_on_submit():
-        current_user.lessons.append(result)
+        current_user.lessons.append(lesson)
         db.session.commit()
         flash(f'You have been registered!', 'success')
         return redirect(url_for('profile'))
-    return render_template('register.html', title='Register', form=form, result=result)
+    return render_template('register.html', title='Register', form=form, lesson=lesson)
 
 
 @app.route("/profile")
