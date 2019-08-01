@@ -37,7 +37,7 @@ class SearchForm(FlaskForm):
 	location = StringField('Location')
 	organization = StringField('Organization')
 	type = StringField('Type')
-	level = SelectField('Level', choices=[('text', 'Beginner/Levels 1-2'),
+	level = SelectField('Level', choices=[('text', 'None'), ('text', 'Beginner/Levels 1-2'),
 										('text', 'Intermediate/Levels 3-5'), ('text', 'Advanced/Levels 6+')])
 	time = DateTimeField('Start Date and Time')
 	submit = SubmitField('Search')

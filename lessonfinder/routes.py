@@ -74,6 +74,7 @@ def search_results(results):
     return render_template('search_results.html', title='Results', results=results)
 
 
+# TODO: fix so it returns something for selecting the level
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     form = SearchForm()
@@ -81,6 +82,8 @@ def search():
         results = Lesson.query.filter(or_(Lesson.location == form.location.data,
                                           Lesson.organization == form.organization.data,
                                           Lesson.level == form.level.data))
+        if form.location.data == "" and form.organization.data == "":
+            results = Lesson.query.all()
         return search_results(results)
     return render_template('search_lessons.html', title='Search', form=form)
 
@@ -95,6 +98,17 @@ def register(lesson_id):
         flash(f'You have been registered!', 'success')
         return redirect(url_for('profile'))
     return render_template('register.html', title='Register', form=form, lesson=lesson)
+
+
+# TODO: edit this so a user can unregister
+@app.route("/unregister/<int:lesson_id>/delete", methods=['POST'])
+@login_required
+def unregister(lesson_id):
+    # lesson = Lesson.query.get_or_404(lesson_id)
+    # db.session.delete(lesson)
+    # db.session.commit()
+    # flash('Your post has been deleted!', 'success')
+    return redirect(url_for('unregister'))
 
 
 @app.route("/profile")

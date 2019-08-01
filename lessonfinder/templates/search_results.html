@@ -5,10 +5,13 @@
         <div class="list-group">
             {% for result in results %}
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <li class="list-group-item">
-                            {{ result.name }}
-                            {{ result.location }}
+                            <h3>{{ result.name }}</h3>
+                            <span>
+                                <h5>Location: {{ result.location }}</h5>
+                                <h5>Instructor: {{ result.instructor }}</h5>
+                            </span>
                         <button id="register">
                             <a class="nav-item nav-link" href="{{ url_for('register', lesson_id=result.id) }}">
                                 Register

@@ -21,6 +21,11 @@
                     <article class="media content-section">
                         <div class="media-body">
                             <li class="article-content">{{ lesson.name }}</li>
+                            <button>
+                                <a class="nav-item nav-link" href="{{ url_for('unregister', lesson_id=lesson.id) }}">
+                                    Unregister
+                                </a>
+                            </button>
                         </div>
                     </article>
                 {% endfor %}
