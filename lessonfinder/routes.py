@@ -100,15 +100,22 @@ def register(lesson_id):
     return render_template('register.html', title='Register', form=form, lesson=lesson)
 
 
-# TODO: edit this so a user can unregister
 @app.route("/unregister/<int:lesson_id>/delete", methods=['POST'])
 @login_required
 def unregister(lesson_id):
-    # lesson = Lesson.query.get_or_404(lesson_id)
-    # db.session.delete(lesson)
+    lesson = Lesson.query.get_or_404(lesson_id)
+    return redirect(url_for('profile'))
+    # db.session.delete(current_user.lessons=lesson.id)
     # db.session.commit()
-    # flash('Your post has been deleted!', 'success')
-    return redirect(url_for('unregister'))
+    # flash('You have unregistered from this lesson!', 'success')
+
+
+# TODO: edit this so a user can unregister
+@app.route("/edit/<int:lesson_id>")
+@login_required
+def edit(lesson_id):
+    lesson = Lesson.query.get(lesson_id)
+    return render_template('edit.html', title="Information", lesson=lesson)
 
 
 @app.route("/profile")

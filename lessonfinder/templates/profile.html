@@ -1,36 +1,51 @@
 {% extends "layout2.html" %}
 {% block content %}
-    <div class="content-section">
-        <div class="row">
-            <div class="col-md-4">
-                <h2>Profile Picture</h2>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <div class="content-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <h2>Profile Picture</h2>
+                </div>
+                <div class="col-md-8">
+                    <h2 class="list-group-item">Information</h2>
+                    <li class="list-group-item" name="fName">First Name: {{ current_user.fName }}</li>
+                    <li class="list-group-item" name="lName">Last Name: {{ current_user.lName }}</li>
+                    <li class="list-group-item" name="email">Email: {{ current_user.email }}</li>
+                    <li class="list-group-item" name="age">Age: {{ current_user.age }}</li>
+                </div>
             </div>
-            <div class="col-md-8">
-                <h2 class="list-group-item">Information</h2>
-                <li class="list-group-item" name="fName">First Name: {{ current_user.fName }}</li>
-                <li class="list-group-item" name="lName">Last Name: {{ current_user.lName }}</li>
-                <li class="list-group-item" name="email">Email: {{ current_user.email }}</li>
-                <li class="list-group-item" name="age">Age: {{ current_user.age }}</li>
+            <!--TODO: Change this to look better-->
+            <div class="row">
+                <div class="col-md-12">
+                    <h3>Your classes.</h3>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h2>Your classes.</h2>
-                <!--if not registered for classes, show message, else show registered classes-->
+            <div class="row">
                 {% for lesson in lessons %}
+                <div class="col-md-6">
+                    <!--if not registered for classes, show message, else show registered classes-->
                     <article class="media content-section">
                         <div class="media-body">
-                            <li class="article-content">{{ lesson.name }}</li>
-                            <button>
-                                <a class="nav-item nav-link" href="{{ url_for('unregister', lesson_id=lesson.id) }}">
-                                    Unregister
+                            <h5 class="article-content">{{ lesson.name }}</h5>
+                            <button class="btn btn-outline-info btn-sm">
+                                <a class="nav-item nav-link" href="{{ url_for('edit', lesson_id=lesson.id) }}">
+                                    View Information/Unregister
                                 </a>
                             </button>
                         </div>
                     </article>
+                </div>
                 {% endfor %}
-                <button><a class="nav-item nav-link" href="{{ url_for('search') }}">Search/Register</a></button>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-info">
+                        <a class="nav-item nav-link" href="{{ url_for('search') }}">
+                            Search/Register
+                        </a>
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    </meta>
 {% endblock content %}

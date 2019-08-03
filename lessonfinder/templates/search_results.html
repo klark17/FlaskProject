@@ -1,23 +1,23 @@
-{% extends "layout2.html" %}
-{% from "macros.html" import render_modal %}
+{% extends "layout3.html" %}
 {% block content %}
     <div class="content-section">
-        <div class="list-group">
+        <div class="row">
             {% for result in results %}
-            <div class="row">
-                <div class="col-md-12">
-                    <li class="list-group-item">
-                            <h3>{{ result.name }}</h3>
-                            <span>
-                                <h5>Location: {{ result.location }}</h5>
-                                <h5>Instructor: {{ result.instructor }}</h5>
-                            </span>
-                        <button id="register">
-                            <a class="nav-item nav-link" href="{{ url_for('register', lesson_id=result.id) }}">
+            <div class="col-md-4">
+                <div class="card" style='width: 18rem;'>
+                    <div class="card-body">
+                        <h4 class="card-title">{{ result.name }}</h4>
+                        <h5 class="card-subtitle mb-2 text-muted">Location: {{ result.location }}</h5>
+                        <h5 class="card-subtitle mb-2 text-muted">Instructor: {{ result.instructor }}</h5>
+                        <p class="card-text">
+                            Contact {{ result.contactEmail.email }} for more information.
+                        </p>
+                        <button id="register" class="btn btn-outline-primary btn-sm">
+                            <a class="card-link" href="{{ url_for('register', lesson_id=result.id) }}">
                                 Register
                             </a>
                         </button>
-                    </li>
+                    </div>
                 </div>
             </div>
             {% endfor %}
