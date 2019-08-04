@@ -89,6 +89,7 @@ def search():
 
 
 @app.route("/register/<int:lesson_id>", methods=['GET', 'POST'])
+@login_required
 def register(lesson_id):
     form = RegistrationForm()
     lesson = Lesson.query.get_or_404(lesson_id)
@@ -100,17 +101,23 @@ def register(lesson_id):
     return render_template('register.html', title='Register', form=form, lesson=lesson)
 
 
+# TODO: edit this so it is more efficient
+# related to reading AppenderBaseQuery
 @app.route("/unregister/<int:lesson_id>/delete", methods=['POST'])
 @login_required
 def unregister(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
+    for user in lesson.users:
+        if current_user.id == user.id:
+            lesson.users.remove(user)
+            db.session.commit()
+            flash('You have unregistered from the lesson.', 'success')
+            break
+        else:
+            continue
     return redirect(url_for('profile'))
-    # db.session.delete(current_user.lessons=lesson.id)
-    # db.session.commit()
-    # flash('You have unregistered from this lesson!', 'success')
 
 
-# TODO: edit this so a user can unregister
 @app.route("/edit/<int:lesson_id>")
 @login_required
 def edit(lesson_id):

@@ -1,25 +1,15 @@
 {% extends "layout2.html" %}
 {% block content %}
-    <div class="content-section">
-        <div class="list-group">
-            <div class="row">
-                <div class="col-md-12">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <h3>{{ lesson.name }}</h3>
-                            <span>
-                                <h5>Location: {{ lesson.location }}</h5>
-                                <h5>Instructor: {{ lesson.instructor }}</h5>
-                                <p>The contact for this lesson is {{ lesson.contactEmail.email }}.
-                                    For more information, feel free to send an email.</p>
-                            </span>
-                            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Unregister</button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+    <article class="media content-section">
+        <div class="media-body">
+            <h4 class="article-content">{{ lesson.name }}</h4>
+                <h5>Location: {{ lesson.location }}</h5>
+                <h5>Instructor: {{ lesson.instructor }}</h5>
+                <p>The contact for this lesson is {{ lesson.contactEmail.email }}.
+                    For more information, feel free to send an email.</p>
+                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Unregister</button>
         </div>
-    </div>
+    </article>
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
