@@ -27,6 +27,8 @@
                     <article class="media content-section">
                         <div class="media-body">
                             <h5 class="article-content">{{ lesson.name }}</h5>
+                            <p class="font-weight-light">Start/End Date: {{ lesson.startDate }} to {{ lesson.endDate }}</p>
+                            <p class="font-weight-light">Time: {{ lesson.startTime }} - {{ lesson.endTime }}</p>
                             <button class="btn btn-outline-info btn-sm">
                                 <a class="nav-item nav-link" href="{{ url_for('edit', lesson_id=lesson.id) }}">
                                     View Information/Unregister

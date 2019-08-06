@@ -9,6 +9,9 @@
                         <h4 class="card-title">{{ result.name }}</h4>
                         <h5 class="card-subtitle mb-2 text-muted">Location: {{ result.location }}</h5>
                         <h5 class="card-subtitle mb-2 text-muted">Instructor: {{ result.instructor }}</h5>
+                        <p class="card-text">Start/End Date: {{ result.startDate }} to {{ result.endDate }}</p>
+                        <p class="card-text">Time: {{ result.startTime }} - {{ result.endTime }}</p>
+                        <p class="card-text">Description: {{ result.desc }}</p>
                         <p class="card-text">
                             Contact {{ result.contactEmail.email }} for more information.
                         </p>

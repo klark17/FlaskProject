@@ -5,6 +5,9 @@ from wtforms_components import TimeField, DateField
 from lessonfinder.models import User
 
 
+levels = [('text', 'None'), ('int', '1'), ('int', '2'), ('int', '3'), ('int', '4'), ('int', '5'), ('int', '6')]
+
+
 class SignupForm(FlaskForm):
 	fName = StringField('First Name', validators=[DataRequired()])
 	lName = StringField('Last Name', validators=[DataRequired()])
@@ -36,11 +39,11 @@ class LoginForm(FlaskForm):
 class SearchForm(FlaskForm):
 	location = StringField('Location')
 	organization = StringField('Organization')
-	type = StringField('Type')
-	level = SelectField('Level', choices=[('text', 'None'), ('text', 'Beginner/Levels 1-2'),
-										('text', 'Intermediate/Levels 3-5'), ('text', 'Advanced/Levels 6+')])
-	time = DateTimeField('Start Date and Time')
+	start = DateField('Start Date')
+	end = DateField('End Date')
+	level = SelectField('Level', choices=levels)
 	submit = SubmitField('Search')
+	# time = DateTimeField('Start Date and Time')
 
 
 class LessonForm(FlaskForm):
@@ -50,9 +53,6 @@ class LessonForm(FlaskForm):
 	endDate = DateField('End Date', render_kw={'placeholder': 'MM/DD/YYYY'})
 	startTime = TimeField('Start Time', render_kw={'placeholder': 'HH:MM'})
 	endTime = TimeField('End Time', render_kw={'placeholder': 'HH:MM'})
-	day = SelectField('Day of the Week', choices=[('text', 'Monday'), ('text', 'Tuesday'), ('text', 'Wednesday'),
-										('text', 'Thursday'), ('text', 'Friday'), ('text', 'Saturday'),
-										('text', 'Sunday')])
 	email = StringField('Contact Email')
 	level = SelectField('Level', choices=[('text', 'Beginner/Levels 1-2'),
 										('text', 'Intermediate/Levels 3-5'), ('text', 'Advanced/Levels 6+')])
@@ -60,6 +60,11 @@ class LessonForm(FlaskForm):
 	# organization = StringField('Organization')
 	instructor = StringField('Instructor')
 	submit = SubmitField('Create Lesson')
+	# possibly going to remove completely
+	# not currently in the Lesson model
+	# day = SelectField('Day of the Week', choices=[('text', 'Monday'), ('text', 'Tuesday'), ('text', 'Wednesday'),
+	# 									('text', 'Thursday'), ('text', 'Friday'), ('text', 'Saturday'),
+	# 									('text', 'Sunday')])
 
 
 class OrganizationForm(FlaskForm):

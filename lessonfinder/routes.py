@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db
-from lessonfinder.form import LoginForm, SearchForm, LessonForm, OrganizationForm, SignupForm, RegistrationForm
+from lessonfinder.form import LoginForm, SearchForm, LessonForm, OrganizationForm, SignupForm, RegistrationForm, levels
 from lessonfinder.models import User, Admin, Lesson, Organization
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_
@@ -74,15 +74,18 @@ def search_results(results):
     return render_template('search_results.html', title='Results', results=results)
 
 
-# TODO: fix so it returns something for selecting the level
+# TODO: fix so it returns something for selecting the time
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     form = SearchForm()
+    level_choice = dict(levels).get(form.level.data)
     if form.validate_on_submit():
         results = Lesson.query.filter(or_(Lesson.location == form.location.data,
                                           Lesson.organization == form.organization.data,
-                                          Lesson.level == form.level.data))
-        if form.location.data == "" and form.organization.data == "":
+                                          Lesson.startDate == form.start.data,
+                                          Lesson.endDate == form.end.data,
+                                          Lesson.level == level_choice))
+        if form.location.data == "" and form.organization.data == "" and level_choice == "None":
             results = Lesson.query.all()
         return search_results(results)
     return render_template('search_lessons.html', title='Search', form=form)

@@ -10,11 +10,11 @@ org1 = Organization(name="Recreation Center", address="1 Test Street", town="Tes
 org2 = Organization(name="Personal Training by Test", address="2 Test Street", town="Test Haven", state="CT", admin=admin2)
 org3 = Organization(name="Track and Field Athletics", address="3 Test Street", town="Test Haven", state="CT", admin=admin3)
 
-lesson1 = Lesson(name="Beginner Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(11, 0), endTime=time(12, 0), contactEmail=admin1, level=1, location="Town Pool", organizer=org1, instructor="Johnny Boy")
+lesson1 = Lesson(name="Beginner Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(11, 0), endTime=time(12, 0), contactEmail=admin1, level=1, location="Town Pool", organizer=org1, instructor="Johnny Boy", desc="If you are looking to learn how to swim, this is the class for you. Learn the basics of how to swim. This is open to all ages.")
 
-lesson2 = Lesson(name="Advanced Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=admin1, level=6, location="Town Pool", organizer=org1, instructor="Sally Girl")
+lesson2 = Lesson(name="Advanced Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=admin1, level=6, location="Town Pool", organizer=org1, instructor="Sally Girl", desc="This class is meant for advanced swimmers looking to improve all four strokes.")
 
-lesson3 = Lesson(name="Intermediate Running Techniques", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=admin2, level=3, location="Football Field/Track", organizer=org2, instructor="Pauly")
+lesson3 = Lesson(name="Intermediate Running Techniques", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=admin2, level=3, location="Football Field/Track", organizer=org2, instructor="Pauly", desc="For intermediate runners. Learn how to improve your running technique for long distance and sprinting.")
 
 admin1.lessons.append(lesson1)
 admin1.lessons.append(lesson2)

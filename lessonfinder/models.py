@@ -75,6 +75,7 @@ class Lesson(db.Model):
     location = db.Column(db.String(50), nullable=False)
     organization = db.Column(db.String(50), db.ForeignKey('organization.id'), nullable=False)
     instructor = db.Column(db.String(50), nullable=False)
+    desc = db.Column(db.String(200))
     # for many-to-many: https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
     def __repr__(self):

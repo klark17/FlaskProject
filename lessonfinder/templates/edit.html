@@ -5,8 +5,11 @@
             <h4 class="article-content">{{ lesson.name }}</h4>
                 <h5>Location: {{ lesson.location }}</h5>
                 <h5>Instructor: {{ lesson.instructor }}</h5>
-                <p>The contact for this lesson is {{ lesson.contactEmail.email }}.
-                    For more information, feel free to send an email.</p>
+                <p class="font-weight-light">The contact for this lesson is {{ lesson.contactEmail.email }} and it is hosted by
+                    {{ lesson.organizer.name }}. For more information, feel free to send an email.</p>
+                <p class="font-weight-light">{{ lesson.desc }}</p>
+                <p class="font-weight-light">This class starts on {{ lesson.startDate }} and ends on {{ lesson.endDate }}.
+                It will be from {{ lesson.startTime }} to {{ lesson.endTime }}</p>
                 <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Unregister</button>
         </div>
     </article>

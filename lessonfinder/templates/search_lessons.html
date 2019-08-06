@@ -32,16 +32,29 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.type.label(class="form-control-label") }}
-                    {% if form.type.errors %}
-                        {{ form.type(class="form-control form-control-lg is-invalid") }}
+                    {{ form.start.label(class="form-control-label") }}
+                    {% if form.start.errors %}
+                        {{ form.start(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
-                            {% for error in form.type.errors %}
+                            {% for error in form.start.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.type(class="form-control form-control-lg") }}
+                        {{ form.start(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.end.label(class="form-control-label") }}
+                    {% if form.end.errors %}
+                        {{ form.end(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.end.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.end(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -57,19 +70,6 @@
                         {{ form.level(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-{#                <div class="form-group">#}
-{#                    {{ form.time.label(class="form-control-label") }}#}
-{#                    {% if form.time.errors %}#}
-{#                        {{ form.time(class="form-control form-control-lg is-invalid") }}#}
-{#                        <div class="invalid-feedback">#}
-{#                            {% for error in form.time.errors %}#}
-{#                                <span>{{ error }}</span>#}
-{#                            {% endfor %}#}
-{#                        </div>#}
-{#                    {% else %}#}
-{#                        {{ form.time(class="form-control form-control-lg") }}#}
-{#                    {% endif %}#}
-{#                </div>#}
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
