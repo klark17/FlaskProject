@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateTimeField, IntegerField, DateField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateTimeField, IntegerField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from wtforms_components import TimeField, DateField
 from lessonfinder.models import User
@@ -39,11 +39,10 @@ class LoginForm(FlaskForm):
 class SearchForm(FlaskForm):
 	location = StringField('Location')
 	organization = StringField('Organization')
-	start = DateField('Start Date')
-	end = DateField('End Date')
+	startDate = DateField('Start Date (*Required)')
+	startTime = TimeField('Start Time (*Required)')
 	level = SelectField('Level', choices=levels)
 	submit = SubmitField('Search')
-	# time = DateTimeField('Start Date and Time')
 
 
 class LessonForm(FlaskForm):

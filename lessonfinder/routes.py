@@ -74,19 +74,20 @@ def search_results(results):
     return render_template('search_results.html', title='Results', results=results)
 
 
-# TODO: fix so it returns something for selecting the time
+# TODO: have it flash an error if no results are returned
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     form = SearchForm()
     level_choice = dict(levels).get(form.level.data)
     if form.validate_on_submit():
         results = Lesson.query.filter(or_(Lesson.location == form.location.data,
-                                          Lesson.organization == form.organization.data,
-                                          Lesson.startDate == form.start.data,
-                                          Lesson.endDate == form.end.data,
-                                          Lesson.level == level_choice))
-        if form.location.data == "" and form.organization.data == "" and level_choice == "None":
-            results = Lesson.query.all()
+                                      Lesson.organization == form.organization.data,
+                                      Lesson.startDate == form.startDate.data,
+                                      Lesson.startTime == form.startTime.data,
+                                      Lesson.level == level_choice))
+        if not results:
+            flash(f"No lessons can be found. Please check your entries.", "danger")
+            redirect(url_for('search'))
         return search_results(results)
     return render_template('search_lessons.html', title='Search', form=form)
 
