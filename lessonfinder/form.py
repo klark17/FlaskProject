@@ -47,16 +47,15 @@ class SearchForm(FlaskForm):
 
 class LessonForm(FlaskForm):
 	name = StringField('Name')
-	type = StringField('Type')
+	# type = StringField('Type')
 	startDate = DateField('Start Date', render_kw={'placeholder': 'MM/DD/YYYY'})
 	endDate = DateField('End Date', render_kw={'placeholder': 'MM/DD/YYYY'})
 	startTime = TimeField('Start Time', render_kw={'placeholder': 'HH:MM'})
 	endTime = TimeField('End Time', render_kw={'placeholder': 'HH:MM'})
 	email = StringField('Contact Email')
-	level = SelectField('Level', choices=[('text', 'Beginner/Levels 1-2'),
-										('text', 'Intermediate/Levels 3-5'), ('text', 'Advanced/Levels 6+')])
+	level = SelectField('Level', choices=levels[1:7])
 	location = StringField('Location')
-	# organization = StringField('Organization')
+	desc = StringField('Add Description')
 	instructor = StringField('Instructor')
 	submit = SubmitField('Create Lesson')
 	# possibly going to remove completely

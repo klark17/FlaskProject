@@ -1,0 +1,35 @@
+{% extends "layout2.html" %}
+{% block content %}
+    <article class="media content-section">
+        <div class="media-body">
+            <h4 class="article-content">{{ lesson.name }}</h4>
+                <h5>Location: {{ lesson.location }}</h5>
+                <h5>Instructor: {{ lesson.instructor }}</h5>
+                <p class="font-weight-light">The contact for this lesson is {{ lesson.contactEmail.email }} and it is hosted by
+                    {{ lesson.organizer.name }}. For more information, feel free to send an email.</p>
+                <p class="font-weight-light">{{ lesson.desc }}</p>
+                <p class="font-weight-light">This class starts on {{ lesson.startDate }} and ends on {{ lesson.endDate }}.
+                It will be from {{ lesson.startTime }} to {{ lesson.endTime }}</p>
+                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal1">Delete</button>
+                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Update</button>
+        </div>
+    </article>
+    <div class="modal fade" id="deleteModal1" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Would you like to remove this lesson?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form action="{{ url_for('remove', lesson_id=lesson.id) }}" method="POST">
+                        <input class="btn btn-danger" type="submit" value="Delete">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -23,6 +23,11 @@
                         <div class="media-body">
                             <li class="article-content">{{ lesson.name }}</li>
                         </div>
+                        <button class="btn btn-outline-info btn-sm">
+                            <a class="nav-item nav-link" href="{{ url_for('view_lesson', lesson_id=lesson.id) }}">
+                                View Lesson Information
+                            </a>
+                        </button>
                     </article>
                 {% endfor %}
                 <button><a class="nav-item nav-link" href="{{ url_for('new_lesson') }}">New Lesson</a></button>

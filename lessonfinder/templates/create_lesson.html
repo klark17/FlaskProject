@@ -113,30 +113,17 @@
                         {{ form.location(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-{#                <div class="form-group">#}
-{#                    {{ form.organization.label(class="form-control-label") }}#}
-{#                    {% if form.organization.errors %}#}
-{#                        {{ form.organization(class="form-control form-control-lg is-invalid") }}#}
-{#                        <div class="invalid-feedback">#}
-{#                            {% for error in form.organization.errors %}#}
-{#                                <span>{{ error }}</span>#}
-{#                            {% endfor %}#}
-{#                        </div>#}
-{#                    {% else %}#}
-{#                        {{ form.organization(class="form-control form-control-lg") }}#}
-{#                    {% endif %}#}
-{#                </div>#}
                 <div class="form-group">
-                    {{ form.type.label(class="form-control-label") }}
-                    {% if form.type.errors %}
-                        {{ form.type(class="form-control form-control-lg is-invalid") }}
+                    {{ form.desc.label(class="form-control-label") }}
+                    {% if form.desc.errors %}
+                        {{ form.desc(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
-                            {% for error in form.type.errors %}
+                            {% for error in form.desc.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.type(class="form-control form-control-lg") }}
+                        {{ form.desc(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
                 <div class="form-group">

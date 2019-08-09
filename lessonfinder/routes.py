@@ -140,7 +140,9 @@ def profile():
 @app.route("/admin_profile")
 @login_required
 def admin_profile():
-    return render_template('admin_profile.html', title="Admin Profile")
+    if current_user.is_authenticated:
+        lessons = current_user.lessons
+    return render_template('admin_profile.html', title="Admin Profile", lessons=lessons)
 
 
 @app.route("/new_lesson/new", methods=['GET', 'POST'])
@@ -149,11 +151,10 @@ def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
         admin = Admin.query.first()
-        org = admin.organization
         lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
                         startTime=form.startTime.data, endTime=form.endTime.data,
-                        contactEmail=admin.id, level=form.level.data, location=form.location.data,
-                        organization=org.name, instructor=form.instructor.data)
+                        contactEmail=admin, level=form.level.data, location=form.location.data,
+                        organization=admin.organization.name, instructor=form.instructor.data)
         admin.lessons.append(lesson)
         db.session.add(lesson)
         db.session.commit()
@@ -164,18 +165,21 @@ def new_lesson():
     return render_template('create_lesson.html', title="New Lesson", form=form)
 
 
-@app.route("/organization", methods=['GET', 'POST'])
+@app.route("/remove/<int:lesson_id>/delete", methods=['POST'])
 @login_required
-def add_organization():
-    form = OrganizationForm()
-    if form.validate_on_submit():
-        organization = Organization(name=form.name.data, address=form.address.data, town=form.town.data,
-                                    state=form.state.data)
-        db.session.add(organization)
-        db.session.commit()
-        flash('You have been added to a new organization', 'success')
-        return redirect(url_for('admin_profile'))
-    return render_template('add_organization.html', title="Join an Organization", form=form)
+def remove(lesson_id):
+    lesson = Lesson.query.get_or_404(lesson_id)
+    db.session.delete(lesson)
+    db.session.commit()
+    flash('The lesson has been removed', 'success')
+    return redirect(url_for('admin_profile'))
+
+
+@app.route("/organization/<int:lesson_id>", methods=['GET', 'POST'])
+@login_required
+def view_lesson(lesson_id):
+    lesson = Lesson.query.get(lesson_id)
+    return render_template('delete_lesson.html', title="Lesson Information", lesson=lesson)
 
 
 #possibly help with determining if admin is associated with an organization
