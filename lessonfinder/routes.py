@@ -20,6 +20,7 @@ def about():
     return render_template('about.html', title='About')
 
 
+# TODO: validate that the user is above the age of 18
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
@@ -74,7 +75,6 @@ def search_results(results):
     return render_template('search_results.html', title='Results', results=results)
 
 
-# TODO: have it flash an error if no results are returned
 @app.route("/search", methods=['GET', 'POST'])
 def search():
     form = SearchForm()
@@ -85,10 +85,10 @@ def search():
                                       Lesson.startDate == form.startDate.data,
                                       Lesson.startTime == form.startTime.data,
                                       Lesson.level == level_choice))
-        if not results:
-            flash(f"No lessons can be found. Please check your entries.", "danger")
-            redirect(url_for('search'))
-        return search_results(results)
+        if len(results.all()) == 0:
+            flash('Your search did not yield any results. Please try again.', 'danger')
+        else:
+            return search_results(results)
     return render_template('search_lessons.html', title='Search', form=form)
 
 
