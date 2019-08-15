@@ -4,7 +4,6 @@ from lessonfinder.form import LoginForm, SearchForm, LessonForm, OrganizationFor
 from lessonfinder.models import User, Admin, Lesson, Organization
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_
-from datetime import date, time
 
 
 # helper table for many-to-many relationships
@@ -28,12 +27,15 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         # hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, age=form.age.data,
-                    username=form.username.data, password=form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('login'))
+        if form.age.data < 18:
+            flash(f'You must be above the age of 18 to join.', 'danger')
+        else:
+            user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, age=form.age.data,
+                        username=form.username.data, password=form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            flash(f'Account created for {form.username.data}!', 'success')
+            return redirect(url_for('login'))
     return render_template('signup_page.html', title='Sign Up', form=form)
 
 

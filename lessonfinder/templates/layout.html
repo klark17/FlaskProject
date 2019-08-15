@@ -30,9 +30,13 @@
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
+            <!-- TODO: fix these links for admin and users in all layouts-->
               {% if current_user.is_authenticated %}
                 <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                 <a class="nav-item nav-link" href="{{ url_for('profile') }}">Profile</a>
+              {% elif current_user.is_authenticated and current_user.role == 'admin' %}
+                <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                <a class="nav-item nav-link" href="{{ url_for('admin_profile') }}">Profile</a>
               {% else  %}
                 <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
                 <a class="nav-item nav-link" href="{{ url_for('signup') }}">Sign Up</a>

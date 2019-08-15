@@ -3,6 +3,8 @@ from lessonfinder import db
 from lessonfinder.models import User, Admin, Organization, Lesson
 from datetime import date, time
 
+db.create_all()
+
 admin1 = Admin(fName="Test1", lName="Admin", username="Test1Admin", email="admin1@mail.com", password="test")
 admin2 = Admin(fName="Test2", lName="Admin", username="Test2Admin", email="admin2@mail.com", password="test")
 admin3 = Admin(fName="Test3", lName="Admin", username="Test3Admin", email="admin3@mail.com", password="test")
@@ -10,18 +12,24 @@ org1 = Organization(name="Recreation Center", address="1 Test Street", town="Tes
 org2 = Organization(name="Personal Training by Test", address="2 Test Street", town="Test Haven", state="CT", admin=admin2)
 org3 = Organization(name="Track and Field Athletics", address="3 Test Street", town="Test Haven", state="CT", admin=admin3)
 
-lesson1 = Lesson(name="Beginner Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(11, 0), endTime=time(12, 0), contactEmail=admin1, level=1, location="Town Pool", organizer=org1, instructor="Johnny Boy", desc="If you are looking to learn how to swim, this is the class for you. Learn the basics of how to swim. This is open to all ages.")
+lesson1 = Lesson(name="Beginner Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(11, 0), endTime=time(12, 0), contactEmail=admin1, level=1, location="Town Pool", organizer=org1, instructor="Johnny Boy", desc="If you are looking to learn how to swim, this is the class for you. Learn the basics of how to swim. This is open to all ages.", cap=3)
 
-lesson2 = Lesson(name="Advanced Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=admin1, level=6, location="Town Pool", organizer=org1, instructor="Sally Girl", desc="This class is meant for advanced swimmers looking to improve all four strokes.")
+lesson2 = Lesson(name="Advanced Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=admin1, level=6, location="Town Pool", organizer=org1, instructor="Sally Girl", desc="This class is meant for advanced swimmers looking to improve all four strokes.", cap=2)
 
-lesson3 = Lesson(name="Intermediate Running Techniques", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=admin2, level=3, location="Football Field/Track", organizer=org2, instructor="Pauly", desc="For intermediate runners. Learn how to improve your running technique for long distance and sprinting.")
+lesson3 = Lesson(name="Intermediate Running Techniques", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=admin2, level=3, location="Football Field/Track", organizer=org2, instructor="Pauly", desc="For intermediate runners. Learn how to improve your running technique for long distance and sprinting.", cap=2)
 
 admin1.lessons.append(lesson1)
 admin1.lessons.append(lesson2)
 admin2.lessons.append(lesson3)
 
-user = User(fName="Test", lName="User", email="testuser@mail.com", age=24, username="TestUser", password="test")
-user.lessons.append(lesson1)
+user1 = User(fName="Test", lName="User", email="testuser@mail.com", age=24, username="TestUser", password="test")
+user2 = User(fName="Test2", lName="User", email="test2user@mail.com", age=24, username="Test2User", password="test")
+user3 = User(fName="Test3", lName="User", email="test3user@mail.com", age=24, username="Test3User", password="test")
+user4 = User(fName="Test4", lName="User", email="test4user@mail.com", age=24, username="Test4User", password="test")
+user1.lessons.append(lesson1)
+user2.lessons.append(lesson)
+user3.lessons.append(lesson)
+user4.lessons.append(lesson2)
 
 db.session.add(admin1)
 db.session.add(admin2)
@@ -32,5 +40,8 @@ db.session.add(org3)
 db.session.add(lesson1)
 db.session.add(lesson2)
 db.session.add(lesson3)
-db.session.add(user)
+db.session.add(user1)
+db.session.add(user2)
+db.session.add(user3)
+db.session.add(user4)
 db.session.commit()

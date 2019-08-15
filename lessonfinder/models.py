@@ -2,6 +2,7 @@ from lessonfinder import db, login_manager
 from flask_login import UserMixin
 
 
+# TODO: get this to load the correct user if admin
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -76,6 +77,8 @@ class Lesson(db.Model):
     organization = db.Column(db.String(50), db.ForeignKey('organization.id'), nullable=False)
     instructor = db.Column(db.String(50), nullable=False)
     desc = db.Column(db.String(200))
+    cap = db.Column(db.Integer, nullable=False)
+    # day = db.Column(db.String(10))
     # for many-to-many: https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
 
     def __repr__(self):

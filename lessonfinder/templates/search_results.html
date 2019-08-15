@@ -15,11 +15,15 @@
                         <p class="card-text">
                             Contact {{ result.contactEmail.email }} for more information.
                         </p>
-                        <button id="register" class="btn btn-outline-primary btn-sm">
-                            <a class="card-link" href="{{ url_for('register', lesson_id=result.id) }}">
-                                Register
-                            </a>
-                        </button>
+                        {% if result.users.count() == result.cap %}
+                            <p class="card-text">This class is full.</p>
+                        {% else %}
+                            <button id="register" class="btn btn-outline-primary btn-sm">
+                                <a class="card-link" href="{{ url_for('register', lesson_id=result.id) }}">
+                                    Register
+                                </a>
+                            </button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
