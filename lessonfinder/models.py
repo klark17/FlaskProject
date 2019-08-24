@@ -1,11 +1,12 @@
-from lessonfinder import db, login_manager
-from flask_login import UserMixin
+from lessonfinder import db
+# login_manager
+from flask_user import UserMixin
 
 
-# TODO: get this to load the correct user if admin
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+# # TODO: get this to load the correct user if admin
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(int(user_id))
 
 
 lessons = db.Table('lessons',
@@ -14,7 +15,7 @@ lessons = db.Table('lessons',
                    )
 
 organized = db.Table('organized',
-                     db.Column('adminId', db.Integer, db.ForeignKey('admin.id')),
+                     db.Column('userId', db.Integer, db.ForeignKey('user.id')),
                      db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id')),
                      )
 
@@ -29,28 +30,45 @@ class User(db.Model, UserMixin):
     fName = db.Column(db.String(50), nullable=False)
     lName = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
-    age = db.Column(db.Integer)
+    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
     lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('users', lazy='dynamic'))
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-
-    def __repr__(self):
-        return f"User('{self.fName}', '{self.username}', '{self.email}')"
-
-
-class Admin(db.Model, UserMixin):
-    __tablename__ = 'admin'
-    id = db.Column(db.Integer, primary_key=True)
-    fName = db.Column(db.String(50), nullable=False)
-    lName = db.Column(db.String(50), nullable=False)
-    username = db.Column(db.String(30), unique=True, nullable=False)
-    email = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
+    organizer = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
     organization = db.relationship('Organization', uselist=False, backref='admin')
-    lessons = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
+    roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
 
     def __repr__(self):
-        return f"Admin('{self.username}', '{self.fName}', '{self.lName}', '{self.email}')"
+        return f"User('{self.fName}', '{self.username}', '{self.email}', '{self.organization}')"
+
+
+# Define the Role data model
+class Role(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+
+
+# Define the UserRoles data model
+class UserRoles(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
+
+
+# class Admin(db.Model, UserMixin):
+#     __tablename__ = 'admin'
+#     id = db.Column(db.Integer, primary_key=True)
+#     fName = db.Column(db.String(50), nullable=False)
+#     lName = db.Column(db.String(50), nullable=False)
+#     username = db.Column(db.String(30), unique=True, nullable=False)
+#     email = db.Column(db.String(50), unique=True, nullable=False)
+#     password = db.Column(db.String(60), nullable=False)
+#     organization = db.relationship('Organization', uselist=False, backref='admin')
+#     lessons = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
+#     role = db.Column(db.String(10), default='admin')
+#
+#     def __repr__(self):
+#         return f"Admin('{self.username}', '{self.fName}', '{self.lName}', '{self.email}')"
 
 
 class Organization(db.Model):
@@ -61,7 +79,7 @@ class Organization(db.Model):
     town = db.Column(db.String(30), nullable=False)
     state = db.Column(db.String(50), nullable=False)
     lessons = db.relationship('Lesson', backref='organizer', lazy=True)
-    adminId = db.Column(db.Integer, db.ForeignKey('admin.id'))
+    adminId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
 class Lesson(db.Model):
@@ -71,7 +89,7 @@ class Lesson(db.Model):
     endDate = db.Column(db.Date, nullable=False)
     startTime = db.Column(db.Time, nullable=False)
     endTime = db.Column(db.Time, nullable=False)
-    email = db.Column(db.Integer, db.ForeignKey('admin.id'), nullable=False)
+    email = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     level = db.Column(db.Integer)
     location = db.Column(db.String(50), nullable=False)
     organization = db.Column(db.String(50), db.ForeignKey('organization.id'), nullable=False)

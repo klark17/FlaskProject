@@ -27,8 +27,8 @@ user2 = User(fName="Test2", lName="User", email="test2user@mail.com", age=24, us
 user3 = User(fName="Test3", lName="User", email="test3user@mail.com", age=24, username="Test3User", password="test")
 user4 = User(fName="Test4", lName="User", email="test4user@mail.com", age=24, username="Test4User", password="test")
 user1.lessons.append(lesson1)
-user2.lessons.append(lesson)
-user3.lessons.append(lesson)
+user2.lessons.append(lesson2)
+user3.lessons.append(lesson3)
 user4.lessons.append(lesson2)
 
 db.session.add(admin1)
@@ -45,3 +45,9 @@ db.session.add(user2)
 db.session.add(user3)
 db.session.add(user4)
 db.session.commit()
+
+
+What needs to happen:
+make copy of user_loader function and login_user 
+make them admin_loader and login_admin
+https://github.com/maxcountryman/flask-login/blob/master/flask_login/login_manager.py

@@ -1,8 +1,9 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db
 from lessonfinder.form import LoginForm, SearchForm, LessonForm, OrganizationForm, SignupForm, RegistrationForm, levels
-from lessonfinder.models import User, Admin, Lesson, Organization
-from flask_login import login_user, current_user, logout_user, login_required
+from lessonfinder.models import User, Role, Lesson, Organization
+# from flask_login import login_user, current_user, logout_user, login_required
+from flask_user import current_user, login_required, roles_required
 from sqlalchemy import or_
 
 
@@ -19,57 +20,43 @@ def about():
     return render_template('about.html', title='About')
 
 
-# TODO: validate that the user is above the age of 18
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and current_user.role == 'user':
         return redirect(url_for('profile'))
+    elif current_user.is_authenticated and current_user.role == 'admin':
+        return redirect(url_for('admin_profile'))
     form = SignupForm()
     if form.validate_on_submit():
         # hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        if form.age.data < 18:
-            flash(f'You must be above the age of 18 to join.', 'danger')
-        else:
-            user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, age=form.age.data,
-                        username=form.username.data, password=form.password.data)
-            db.session.add(user)
-            db.session.commit()
-            flash(f'Account created for {form.username.data}!', 'success')
-            return redirect(url_for('login'))
+        # if form.age.data < 18:
+        #     flash(f'You must be above the age of 18 to join.', 'danger')
+        # else:
+        user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, username=form.username.data,
+                    password=form.password.data)
+        user.roles.append(Role(name='user'))
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('user.login'))
     return render_template('signup_page.html', title='Sign Up', form=form)
 
 
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('profile'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        if db.session.query(User.id).filter_by(username=form.username.data).scalar():
-            user = User.query.filter_by(username=form.username.data).first()
-            if user and user.password == form.password.data:
-                login_user(user, remember=form.remember.data)
-                next_page = request.args.get('next')
-                flash('You have been logged in!', 'success')
-                return redirect(next_page) if next_page else redirect(url_for('profile'))
-            else:
-                flash('Login Unsuccessful. Please check username and password', 'danger')
-        elif db.session.query(Admin.id).filter_by(username=form.username.data).scalar():
-            admin = Admin.query.filter_by(username=form.username.data).first()
-            if admin and admin.password == form.password.data:
-                login_user(admin, remember=form.remember.data)
-                org = admin.organization
-                flash('You have been logged in as an administrator!', 'success')
-                return render_template('admin_profile.html', name=org.name, lessons=admin.lessons)
-            else:
-                flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('login_page.html', title='Login', form=form)
+# @app.route("/login", methods=['GET', 'POST'])
+# def login():
+#     if current_user.is_authenticated and current_user.roles == 'user':
+#         return redirect(url_for('profile'))
+#     elif current_user.is_authenticated and current_user.roles == 'admin':
+#         return redirect(url_for('admin_profile'))
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         return render_template('login_page.html', title='Login', form=form)
 
-
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for('about'))
+#
+# @app.route("/logout")
+# def logout():
+#     logout_user()
+#     return redirect(url_for('about'))
 
 
 @app.route("/results")
@@ -132,6 +119,7 @@ def edit(lesson_id):
 
 
 @app.route("/profile")
+@roles_required('user')
 @login_required
 def profile():
     if current_user.is_authenticated:
@@ -140,6 +128,7 @@ def profile():
 
 
 @app.route("/admin_profile")
+@roles_required('admin')
 @login_required
 def admin_profile():
     if current_user.is_authenticated:
@@ -152,7 +141,7 @@ def admin_profile():
 def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
-        admin = Admin.query.first()
+        admin = User.query.first()
         lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
                         startTime=form.startTime.data, endTime=form.endTime.data,
                         contactEmail=admin, level=form.level.data, location=form.location.data,
