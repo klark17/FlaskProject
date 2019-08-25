@@ -1,0 +1,61 @@
+{% extends 'flask_user/_public_base.html' %}
+
+{% block content %}
+{% from "flask_user/_macros.html" import render_field, render_checkbox_field, render_submit_field %}
+<h1>{%trans%}Log In{%endtrans%}</h1>
+
+<form action="" method="POST" class="form" role="form">
+    {{ form.hidden_tag() }}
+
+    {# Username or Email field #}
+    {% set field = form.username if user_manager.USER_ENABLE_USERNAME else form.email %}
+    <div class="form-group {% if field.errors %}has-error{% endif %}">
+        {# Label on left, "New here? Register." on right #}
+        <div class="form-group">
+            {{ form.username.label(class="form-control-label") }}
+            {% if form.username.errors %}
+                {{ form.username(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.username(class="form-control form-control-lg") }}
+            {% endif %}
+        </div>
+    </div>
+
+    {# Password field #}
+    {% set field = form.password %}
+    <div class="form-group">
+        {{ form.password.label(class="form-control-label") }}
+        {% if form.password.errors %}
+            {{ form.password(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ form.password(class="form-control form-control-lg") }}
+        {% endif %}
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            Need An Account? <a class="ml-2" href="{{ url_for('signup') }}">Sign Up Now</a>
+        </small>
+    </div>
+    {# Remember me #}
+    {% if user_manager.USER_ENABLE_REMEMBER_ME %}
+    {{ render_checkbox_field(login_form.remember_me, tabindex=130) }}
+    {% endif %}
+
+    <div class="form-group">
+        {{ form.submit(class="btn btn-outline-info") }}
+    </div>
+    {# Submit button #}
+{#    {{ render_submit_field(form.submit, tabindex=180) }}#}
+</form>
+
+{% endblock %}

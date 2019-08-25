@@ -1,15 +1,15 @@
 cd Projects\myprojects\venv\Lesson_Finder
-from lessonfinder import db
+from lessonfinder import db, user_manager
 from lessonfinder.models import User, Role, Organization, Lesson
 from datetime import date, time
 
 db.create_all()
 
-user1 = User(fName="Test1", lName="User", email="test1user@mail.com", username="TestUser", password="test")
-user2 = User(fName="Test2", lName="Admin", email="test2admin@mail.com", username="Test2Admin", password="test")
-user3 = User(fName="Test3", lName="User", email="test3user@mail.com", username="Test3User", password="test")
-user4 = User(fName="Test4", lName="Admin", email="test4admin@mail.com", username="Test4Admin", password="test")
-user5 = User(fName="Test5", lName="Admin", email="test5admin@mail.com", username="Test5Admin", password="test")
+user1 = User(fName="Test1", lName="User", email="test1user@mail.com", username="TestUser", password=user_manager.hash_password("test"))
+user2 = User(fName="Test2", lName="Admin", email="test2admin@mail.com", username="Test2Admin", password=user_manager.hash_password("test"))
+user3 = User(fName="Test3", lName="User", email="test3user@mail.com", username="Test3User", password=user_manager.hash_password("test"))
+user4 = User(fName="Test4", lName="Admin", email="test4admin@mail.com", username="Test4Admin", password=user_manager.hash_password("test"))
+user5 = User(fName="Test5", lName="Admin", email="test5admin@mail.com", username="Test5Admin", password=user_manager.hash_password("test"))
 
 role1 = Role(name='user')
 role2 = Role(name='admin')

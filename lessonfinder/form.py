@@ -13,7 +13,6 @@ class SignupForm(FlaskForm):
     lName = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    age = IntegerField('Age (Must be 18 years old)', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')

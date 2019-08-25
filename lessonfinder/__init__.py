@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['USER_ENABLE_EMAIL'] = False
+app.config['USER_ALLOW_LOGIN_WITHOUT_CONFIRMED_EMAIL'] = True
 app.config['CSRF_ENABLED'] = True
 # app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 db = SQLAlchemy(app)
@@ -19,7 +20,9 @@ db = SQLAlchemy(app)
 # login_manager.login_message_category = 'info'
 
 from lessonfinder.models import User
-# db_adapter = SQLAlchemyAdapter(db, User)        # Register the User model
+from lessonfinder.form import LoginForm
+
+
 user_manager = UserManager(app, db, User)
 # user_manager = UserManager(app, db, User)
 

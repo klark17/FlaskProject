@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash, redirect, request
-from lessonfinder import app, db
+from lessonfinder import app, db, user_manager
 from lessonfinder.form import LoginForm, SearchForm, LessonForm, OrganizationForm, SignupForm, RegistrationForm, levels
 from lessonfinder.models import User, Role, Lesson, Organization
 # from flask_login import login_user, current_user, logout_user, login_required
@@ -28,13 +28,10 @@ def signup():
         return redirect(url_for('admin_profile'))
     form = SignupForm()
     if form.validate_on_submit():
-        # hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        # if form.age.data < 18:
-        #     flash(f'You must be above the age of 18 to join.', 'danger')
-        # else:
+        role = Role.query.first()
         user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, username=form.username.data,
-                    password=form.password.data)
-        user.roles.append(Role(name='user'))
+                    password=user_manager.hash_password(form.password.data))
+        user.roles.append(role)
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
@@ -137,16 +134,17 @@ def admin_profile():
 
 
 @app.route("/new_lesson/new", methods=['GET', 'POST'])
+@roles_required('admin')
 @login_required
 def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
-        admin = User.query.first()
+        user = User.query.first()
         lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
                         startTime=form.startTime.data, endTime=form.endTime.data,
-                        contactEmail=admin, level=form.level.data, location=form.location.data,
-                        organization=admin.organization.name, instructor=form.instructor.data)
-        admin.lessons.append(lesson)
+                        contactEmail=user, level=form.level.data, location=form.location.data,
+                        organization=user.organization.name, instructor=form.instructor.data)
+        user.organizer.append(lesson)
         db.session.add(lesson)
         db.session.commit()
         flash('The lesson has been created!', 'success')
@@ -157,6 +155,7 @@ def new_lesson():
 
 
 @app.route("/remove/<int:lesson_id>/delete", methods=['POST'])
+@roles_required('admin')
 @login_required
 def remove(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
