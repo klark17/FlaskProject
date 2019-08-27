@@ -22,14 +22,15 @@ def about():
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
-    if current_user.is_authenticated and current_user.role == 'user':
+    if current_user.is_authenticated and current_user.roles == 'user':
         return redirect(url_for('profile'))
-    elif current_user.is_authenticated and current_user.role == 'admin':
+    elif current_user.is_authenticated and current_user.roles == 'admin':
         return redirect(url_for('admin_profile'))
     form = SignupForm()
     if form.validate_on_submit():
-        role = Role.query.first()
-        user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, username=form.username.data,
+        role = Role.query.filter_by(name="user").first()
+        print(role.name)
+        user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, active=True, username=form.username.data,
                     password=user_manager.hash_password(form.password.data))
         user.roles.append(role)
         db.session.add(user)
@@ -116,7 +117,6 @@ def edit(lesson_id):
 
 
 @app.route("/profile")
-@roles_required('user')
 @login_required
 def profile():
     if current_user.is_authenticated:
