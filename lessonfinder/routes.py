@@ -119,7 +119,11 @@ def edit(lesson_id):
 @app.route("/profile")
 @login_required
 def profile():
-    if current_user.is_authenticated:
+    role = current_user.roles
+    role = role[0]
+    if current_user.is_authenticated and role.name == 'admin':
+        return redirect(url_for('admin_profile'))
+    elif current_user.is_authenticated:
         lessons = current_user.lessons
     return render_template('profile.html', title="Profile", lessons=lessons)
 
@@ -129,8 +133,9 @@ def profile():
 @login_required
 def admin_profile():
     if current_user.is_authenticated:
-        lessons = current_user.lessons
-    return render_template('admin_profile.html', title="Admin Profile", lessons=lessons)
+        lessons = current_user.organizer
+        org = current_user.organization
+    return render_template('admin_profile.html', title="Admin Profile", lessons=lessons, org=org)
 
 
 @app.route("/new_lesson/new", methods=['GET', 'POST'])
@@ -139,18 +144,19 @@ def admin_profile():
 def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
-        user = User.query.first()
+        user = current_user
         lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
                         startTime=form.startTime.data, endTime=form.endTime.data,
                         contactEmail=user, level=form.level.data, location=form.location.data,
-                        organization=user.organization.name, instructor=form.instructor.data)
+                        organization=user.organization.name, instructor=form.instructor.data,
+                        cap=int(form.cap.data))
         user.organizer.append(lesson)
         db.session.add(lesson)
         db.session.commit()
         flash('The lesson has been created!', 'success')
         return redirect(url_for('admin_profile'))
-    # else:
-    #     flash('Unsuccessful. Please check all fields.', 'danger')
+    else:
+        flash('Unsuccessful. Please check all fields.', 'danger')
     return render_template('create_lesson.html', title="New Lesson", form=form)
 
 
