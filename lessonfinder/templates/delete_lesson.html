@@ -11,7 +11,7 @@
                 <p class="font-weight-light">This class starts on {{ lesson.startDate }} and ends on {{ lesson.endDate }}.
                 It will be from {{ lesson.startTime }} to {{ lesson.endTime }}</p>
                 <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal1">Delete</button>
-                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Update</button>
+                <button type="button" class="btn btn-warning btn-sm m-1"><a class="nav-item nav-link" href="{{ url_for('update_lesson', lesson_id=lesson.id) }}">Update</a></button>
         </div>
     </article>
     <div class="modal fade" id="deleteModal1" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

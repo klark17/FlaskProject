@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateTimeField, IntegerField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from wtforms_components import TimeField, DateField
+from flask_user import current_user
 from lessonfinder.models import User
 
 
@@ -76,6 +77,38 @@ class RegistrationForm(FlaskForm):
     name = StringField('Name of Participant')
     contactEmail = StringField('Contact Email')
     submit = SubmitField('Register')
+
+
+class UpdatePasswordForm(FlaskForm):
+    old_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Submit Changes')
+
+
+class UpdateUsernameForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    submit = SubmitField('Submit Changes')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError('Username is taken. Choose another.')
+
+
+class UpdateLessonForm(FlaskForm):
+    name = StringField('Name')
+    startDate = DateField('Start Date', render_kw={'placeholder': 'MM/DD/YYYY'})
+    endDate = DateField('End Date', render_kw={'placeholder': 'MM/DD/YYYY'})
+    startTime = TimeField('Start Time', render_kw={'placeholder': 'HH:MM'})
+    endTime = TimeField('End Time', render_kw={'placeholder': 'HH:MM'})
+    email = StringField('Contact Email')
+    level = SelectField('Level', choices=levels[1:7])
+    location = StringField('Location')
+    desc = StringField('Add Description')
+    cap = IntegerField('Max Enrollment')
+    instructor = StringField('Instructor')
+    submit = SubmitField('Submit Changes')
 
 
 

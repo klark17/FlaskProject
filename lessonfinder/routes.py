@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db, user_manager
-from lessonfinder.form import LoginForm, SearchForm, LessonForm, OrganizationForm, SignupForm, RegistrationForm, levels
+from lessonfinder.form import LoginForm, SearchForm, LessonForm, SignupForm, RegistrationForm, levels, UpdateLessonForm, UpdatePasswordForm, UpdateUsernameForm
 from lessonfinder.models import User, Role, Lesson, Organization
 # from flask_login import login_user, current_user, logout_user, login_required
 from flask_user import current_user, login_required, roles_required
@@ -29,7 +29,6 @@ def signup():
     form = SignupForm()
     if form.validate_on_submit():
         role = Role.query.filter_by(name="user").first()
-        print(role.name)
         user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, active=True, username=form.username.data,
                     password=user_manager.hash_password(form.password.data))
         user.roles.append(role)
@@ -38,23 +37,6 @@ def signup():
         flash(f'Account created for {form.username.data}!', 'success')
         return redirect(url_for('user.login'))
     return render_template('signup_page.html', title='Sign Up', form=form)
-
-
-# @app.route("/login", methods=['GET', 'POST'])
-# def login():
-#     if current_user.is_authenticated and current_user.roles == 'user':
-#         return redirect(url_for('profile'))
-#     elif current_user.is_authenticated and current_user.roles == 'admin':
-#         return redirect(url_for('admin_profile'))
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         return render_template('login_page.html', title='Login', form=form)
-
-#
-# @app.route("/logout")
-# def logout():
-#     logout_user()
-#     return redirect(url_for('about'))
 
 
 @app.route("/results")
@@ -128,6 +110,43 @@ def profile():
     return render_template('profile.html', title="Profile", lessons=lessons)
 
 
+# TODO: Complete database updates for changing username
+@app.route('/update_username', methods=['GET', 'POST'])
+@roles_required('user')
+@login_required
+def update_username():
+    form = UpdateUsernameForm()
+    if form.validate_on_submit():
+        flash(f'Success', 'success')
+        return redirect(url_for('profile'))
+    return render_template('edit_username.html', title='Change Username', form=form)
+
+
+# TODO: Complete database updates for changing password
+@app.route('/update_password', methods=['GET', 'POST'])
+@roles_required('user')
+@login_required
+def update_password():
+    form = UpdatePasswordForm()
+    if form.validate_on_submit():
+        flash(f'Success', 'success')
+        return redirect(url_for('profile'))
+    return render_template('edit_password.html', title='Change Password', form=form)
+
+
+# TODO: Change this so it changes lesson information in database
+@app.route("/update_lesson/<int:lesson_id>/", methods=['GET', 'POST'])
+@roles_required('admin')
+@login_required
+def update_lesson(lesson_id):
+    lesson = Lesson.query.get_or_404(lesson_id)
+    form = UpdateLessonForm()
+    if form.validate_on_submit():
+        flash(f'Lesson updated successfully.')
+        return redirect(url_for('admin_profile'))
+    return render_template('update_lesson.html', title='Edit Information', form=form, lesson=lesson)
+
+
 @app.route("/admin_profile")
 @roles_required('admin')
 @login_required
@@ -177,10 +196,5 @@ def view_lesson(lesson_id):
     lesson = Lesson.query.get(lesson_id)
     return render_template('delete_lesson.html', title="Lesson Information", lesson=lesson)
 
-
-#possibly help with determining if admin is associated with an organization
-#if the user is not associated with an org. then it will make the add org button available
-#if associated it will display the name of the organization in the admin profile
-#db.session.query(Admin).filter(Admin.id == Organization.adminId).filter(Admin.name == 'dilbert')
 
 

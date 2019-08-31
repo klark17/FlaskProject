@@ -13,6 +13,22 @@
                     <li class="list-group-item" name="email">Email: {{ current_user.email }}</li>
                 </div>
             </div>
+            <div  class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-info btn-sm">
+                        <a class="nav-item nav-link" href="{{ url_for('update_username') }}">
+                            Change Username
+                        </a>
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-info btn-sm">
+                        <a class="nav-item nav-link" href="{{ url_for('update_password') }}">
+                            Change Password
+                        </a>
+                    </button>
+                </div>
+            </div>
             <!--TODO: Change this to look better-->
             <div class="row">
                 <div class="col-md-12">
