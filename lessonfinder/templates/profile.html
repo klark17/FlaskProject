@@ -10,6 +10,7 @@
                     <h2 class="list-group-item">Information</h2>
                     <li class="list-group-item" name="fName">First Name: {{ current_user.fName }}</li>
                     <li class="list-group-item" name="lName">Last Name: {{ current_user.lName }}</li>
+                    <li class="list-group-item" name="lName">Username: {{ current_user.username }}</li>
                     <li class="list-group-item" name="email">Email: {{ current_user.email }}</li>
                 </div>
             </div>
@@ -18,13 +19,6 @@
                     <button class="btn btn-outline-info btn-sm">
                         <a class="nav-item nav-link" href="{{ url_for('update_username') }}">
                             Change Username
-                        </a>
-                    </button>
-                </div>
-                <div class="col-md-4">
-                    <button class="btn btn-outline-info btn-sm">
-                        <a class="nav-item nav-link" href="{{ url_for('update_password') }}">
-                            Change Password
                         </a>
                     </button>
                 </div>

@@ -99,6 +99,7 @@ def edit(lesson_id):
 
 
 @app.route("/profile")
+@roles_required('user')
 @login_required
 def profile():
     role = current_user.roles
@@ -116,22 +117,25 @@ def profile():
 @login_required
 def update_username():
     form = UpdateUsernameForm()
+    user = current_user
     if form.validate_on_submit():
+        user.username = form.username.data
+        db.session.commit()
         flash(f'Success', 'success')
         return redirect(url_for('profile'))
     return render_template('edit_username.html', title='Change Username', form=form)
 
 
-# TODO: Complete database updates for changing password
-@app.route('/update_password', methods=['GET', 'POST'])
-@roles_required('user')
-@login_required
-def update_password():
-    form = UpdatePasswordForm()
-    if form.validate_on_submit():
-        flash(f'Success', 'success')
-        return redirect(url_for('profile'))
-    return render_template('edit_password.html', title='Change Password', form=form)
+# # TODO: Complete database updates for changing password
+# @app.route('/update_password', methods=['GET', 'POST'])
+# @roles_required('user')
+# @login_required
+# def update_password():
+#     form = UpdatePasswordForm()
+#     if form.validate_on_submit():
+#         flash(f'Success', 'success')
+#         return redirect(url_for('profile'))
+#     return render_template('edit_password.html', title='Change Password', form=form)
 
 
 # TODO: Change this so it changes lesson information in database
