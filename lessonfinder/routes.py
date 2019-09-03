@@ -91,15 +91,14 @@ def unregister(lesson_id):
     return redirect(url_for('profile'))
 
 
-@app.route("/edit/<int:lesson_id>")
+@app.route("/lesson_info/<int:lesson_id>")
 @login_required
-def edit(lesson_id):
+def lesson_info(lesson_id):
     lesson = Lesson.query.get(lesson_id)
-    return render_template('edit.html', title="Information", lesson=lesson)
+    return render_template('lesson_info.html', title="Information", lesson=lesson)
 
 
 @app.route("/profile")
-@roles_required('user')
 @login_required
 def profile():
     role = current_user.roles
@@ -126,19 +125,7 @@ def update_username():
     return render_template('edit_username.html', title='Change Username', form=form)
 
 
-# # TODO: Complete database updates for changing password
-# @app.route('/update_password', methods=['GET', 'POST'])
-# @roles_required('user')
-# @login_required
-# def update_password():
-#     form = UpdatePasswordForm()
-#     if form.validate_on_submit():
-#         flash(f'Success', 'success')
-#         return redirect(url_for('profile'))
-#     return render_template('edit_password.html', title='Change Password', form=form)
-
-
-# TODO: Change this so it changes lesson information in database
+# TODO: Fix this. It doesn't work at all
 @app.route("/update_lesson/<int:lesson_id>/", methods=['GET', 'POST'])
 @roles_required('admin')
 @login_required
@@ -146,6 +133,28 @@ def update_lesson(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
     form = UpdateLessonForm()
     if form.validate_on_submit():
+        data = request.form
+        # for i in data:
+        #     if data[i] == "":
+        #         data[i] = lesson.i
+        #         print(lesson.i)
+        name = form.name.data
+        startDate = form.startDate.data
+        endDate = form.endDate.data
+        startTime = form.startTime.data
+        endTime = form.endTime.data
+        level = form.level.data
+        location = form.location.data
+        desc = form.desc.data
+        cap = form.cap.data
+        instructor = form.instructor.data
+        # for i in data
+        # check if data is empty
+        # if empty, remove it
+        # for the each element that is changed
+        # update the lesson element
+        if lesson.users.count() > form.cap.data:
+            flash(f'The number of users registered exceeds the maximum enrollment. You can\'t change it.', 'danger' )
         flash(f'Lesson updated successfully.')
         return redirect(url_for('admin_profile'))
     return render_template('update_lesson.html', title='Edit Information', form=form, lesson=lesson)
@@ -194,11 +203,12 @@ def remove(lesson_id):
     return redirect(url_for('admin_profile'))
 
 
-@app.route("/organization/<int:lesson_id>", methods=['GET', 'POST'])
+@app.route("/view_lesson/<int:lesson_id>", methods=['GET', 'POST'])
+@roles_required('admin')
 @login_required
 def view_lesson(lesson_id):
     lesson = Lesson.query.get(lesson_id)
-    return render_template('delete_lesson.html', title="Lesson Information", lesson=lesson)
+    return render_template('view_lesson.html', title="Lesson Information", lesson=lesson)
 
 
 

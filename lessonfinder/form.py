@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateTimeField, IntegerField, DateField, TimeField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Optional
 from wtforms_components import TimeField, DateField
 from flask_user import current_user
 from lessonfinder.models import User
@@ -39,8 +39,8 @@ class LoginForm(FlaskForm):
 class SearchForm(FlaskForm):
     location = StringField('Location')
     organization = StringField('Organization')
-    startDate = DateField('Start Date (*Required)')
-    startTime = TimeField('Start Time (*Required)')
+    startDate = DateField('Start Date', validators=[Optional()])
+    startTime = TimeField('Start Time', validators=[Optional()])
     level = SelectField('Level', choices=levels)
     submit = SubmitField('Search')
 
@@ -98,15 +98,14 @@ class UpdateUsernameForm(FlaskForm):
 
 class UpdateLessonForm(FlaskForm):
     name = StringField('Name')
-    startDate = DateField('Start Date', render_kw={'placeholder': 'MM/DD/YYYY'})
-    endDate = DateField('End Date', render_kw={'placeholder': 'MM/DD/YYYY'})
-    startTime = TimeField('Start Time', render_kw={'placeholder': 'HH:MM'})
-    endTime = TimeField('End Time', render_kw={'placeholder': 'HH:MM'})
-    email = StringField('Contact Email')
+    startDate = DateField('Start Date', validators=[Optional()], render_kw={'placeholder': 'MM/DD/YYYY'})
+    endDate = DateField('End Date', validators=[Optional()], render_kw={'placeholder': 'MM/DD/YYYY'})
+    startTime = TimeField('Start Time', validators=[Optional()], render_kw={'placeholder': 'HH:MM'})
+    endTime = TimeField('End Time', validators=[Optional()], render_kw={'placeholder': 'HH:MM'})
     level = SelectField('Level', choices=levels[1:7])
     location = StringField('Location')
     desc = StringField('Add Description')
-    cap = IntegerField('Max Enrollment')
+    cap = IntegerField('Max Enrollment', validators=[Optional()])
     instructor = StringField('Instructor')
     submit = SubmitField('Submit Changes')
 
