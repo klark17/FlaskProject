@@ -110,7 +110,6 @@ def profile():
     return render_template('profile.html', title="Profile", lessons=lessons)
 
 
-# TODO: Complete database updates for changing username
 @app.route('/update_username', methods=['GET', 'POST'])
 @roles_required('user')
 @login_required
@@ -125,7 +124,6 @@ def update_username():
     return render_template('edit_username.html', title='Change Username', form=form)
 
 
-# TODO: Fix this. It doesn't work at all
 @app.route("/update_lesson/<int:lesson_id>/", methods=['GET', 'POST'])
 @roles_required('admin')
 @login_required
@@ -133,31 +131,39 @@ def update_lesson(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
     form = UpdateLessonForm()
     if form.validate_on_submit():
-        data = request.form
-        # for i in data:
-        #     if data[i] == "":
-        #         data[i] = lesson.i
-        #         print(lesson.i)
-        name = form.name.data
-        startDate = form.startDate.data
-        endDate = form.endDate.data
-        startTime = form.startTime.data
-        endTime = form.endTime.data
-        level = form.level.data
-        location = form.location.data
-        desc = form.desc.data
-        cap = form.cap.data
-        instructor = form.instructor.data
-        # for i in data
-        # check if data is empty
-        # if empty, remove it
-        # for the each element that is changed
-        # update the lesson element
-        if lesson.users.count() > form.cap.data:
-            flash(f'The number of users registered exceeds the maximum enrollment. You can\'t change it.', 'danger' )
-        flash(f'Lesson updated successfully.')
-        return redirect(url_for('admin_profile'))
+        if form.cap.data and (lesson.users.count() > form.cap.data):
+            flash(f'The number of users registered exceeds the maximum enrollment. You can\'t change it.', 'danger')
+        else:
+            # could be used to set a day of the week
+            # day.strftime('%A')
+            update_lesson_helper(form, lesson)
+            flash(f'Lesson updated successfully.')
+            return redirect(url_for('admin_profile'))
     return render_template('update_lesson.html', title='Edit Information', form=form, lesson=lesson)
+
+
+def update_lesson_helper(form, lesson):
+    if form.name.data:
+        lesson.name = form.name.data
+    if form.startDate.data:
+        lesson.startDate = form.startDate.data
+    if form.endDate.data:
+        lesson.endDate = form.endDate.data
+    if form.startTime.data:
+        lesson.startTime = form.startTime.data
+    if form.endTime.data:
+        lesson.endTime = form.endTime.data
+    if form.level.data:
+        lesson.level = form.level.data
+    if form.location.data:
+        lesson.location = form.location.data
+    if form.desc.data:
+        lesson.desc = form.desc.data
+    if form.cap.data:
+        lesson.cap = form.cap
+    if form.instructor.data:
+        lesson.instructor = form.instructor.data
+    db.session.commit()
 
 
 @app.route("/admin_profile")
