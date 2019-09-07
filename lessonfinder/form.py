@@ -1,12 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, DateTimeField, IntegerField, DateField, TimeField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, SelectMultipleField, DateTimeField, IntegerField, DateField, TimeField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Optional
 from wtforms_components import TimeField, DateField
 from flask_user import current_user
 from lessonfinder.models import User
 
 
-levels = [('text', 'None'), ('int', '1'), ('int', '2'), ('int', '3'), ('int', '4'), ('int', '5'), ('int', '6')]
+levels = [('None', 'None'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6')]
+days = [('None', 'None'), ('Monday', 'Monday'), ('Tuesday', 'Tuesday'),
+                                                  ('Wednesday', 'Wednesday'), ('Thursday', 'Thursday'),
+                                                  ('Friday', 'Friday'), ('Saturday', 'Saturday'), ('Sunday', 'Sunday')]
 
 
 class SignupForm(FlaskForm):
@@ -41,6 +44,7 @@ class SearchForm(FlaskForm):
     organization = StringField('Organization')
     startDate = DateField('Start Date', validators=[Optional()])
     startTime = TimeField('Start Time', validators=[Optional()])
+    day = SelectField('Day of the Week', choices=days)
     level = SelectField('Level', choices=levels)
     submit = SubmitField('Search')
 
@@ -59,11 +63,7 @@ class LessonForm(FlaskForm):
     cap = IntegerField('Max Enrollment')
     instructor = StringField('Instructor')
     submit = SubmitField('Create Lesson')
-    # possibly going to remove completely
-    # not currently in the Lesson model
-    # day = SelectField('Day of the Week', choices=[('text', 'Monday'), ('text', 'Tuesday'), ('text', 'Wednesday'),
-    # 									('text', 'Thursday'), ('text', 'Friday'), ('text', 'Saturday'),
-    # 									('text', 'Sunday')])
+    day = SelectField('Day of the Week', choices=days)
 
 
 class OrganizationForm(FlaskForm):
@@ -107,6 +107,7 @@ class UpdateLessonForm(FlaskForm):
     desc = StringField('Add Description')
     cap = IntegerField('Max Enrollment', validators=[Optional()])
     instructor = StringField('Instructor')
+    day = SelectField('Day of the Week', choices=days)
     submit = SubmitField('Submit Changes')
 
 

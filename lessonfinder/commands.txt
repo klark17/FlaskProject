@@ -5,8 +5,8 @@ from datetime import date, time
 
 db.create_all()
 
-admin1 = Admin(fName="Test1", lName="Admin", username="Test1Admin", email="admin1@mail.com", password="test")
-admin2 = Admin(fName="Test2", lName="Admin", username="Test2Admin", email="admin2@mail.com", password="test")
+admin1 = Admin(fName="Test1", lName="Admin", username="Test1Admin", active=True, email="admin1@mail.com", password="test")
+admin2 = Admin(fName="Test2", lName="Admin", username="Test2Admin", active=True, email="admin2@mail.com", password="test")
 admin3 = Admin(fName="Test3", lName="Admin", username="Test3Admin", email="admin3@mail.com", password="test")
 org1 = Organization(name="Recreation Center", address="1 Test Street", town="Test Haven", state="CT", admin=admin1)
 org2 = Organization(name="Personal Training by Test", address="2 Test Street", town="Test Haven", state="CT", admin=admin2)

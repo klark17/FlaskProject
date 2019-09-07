@@ -1,12 +1,5 @@
 from lessonfinder import db
-# login_manager
 from flask_user import UserMixin
-
-
-# # TODO: get this to load the correct user if admin
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.query.get(int(user_id))
 
 
 lessons = db.Table('lessons',
@@ -55,22 +48,6 @@ class UserRoles(db.Model):
     role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
 
 
-# class Admin(db.Model, UserMixin):
-#     __tablename__ = 'admin'
-#     id = db.Column(db.Integer, primary_key=True)
-#     fName = db.Column(db.String(50), nullable=False)
-#     lName = db.Column(db.String(50), nullable=False)
-#     username = db.Column(db.String(30), unique=True, nullable=False)
-#     email = db.Column(db.String(50), unique=True, nullable=False)
-#     password = db.Column(db.String(60), nullable=False)
-#     organization = db.relationship('Organization', uselist=False, backref='admin')
-#     lessons = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
-#     role = db.Column(db.String(10), default='admin')
-#
-#     def __repr__(self):
-#         return f"Admin('{self.username}', '{self.fName}', '{self.lName}', '{self.email}')"
-
-
 class Organization(db.Model):
     __tablename__ = 'organization'
     id = db.Column(db.Integer, primary_key=True)
@@ -96,8 +73,7 @@ class Lesson(db.Model):
     instructor = db.Column(db.String(50), nullable=False)
     desc = db.Column(db.String(200))
     cap = db.Column(db.Integer, nullable=False)
-    # day = db.Column(db.String(10))
-    # for many-to-many: https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
+    day = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         return f"Lesson('{self.startDate}', '{self.endDate}', '{self.level}', '{self.location}')"

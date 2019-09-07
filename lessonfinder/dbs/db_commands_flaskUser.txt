@@ -5,11 +5,11 @@ from datetime import date, time
 
 db.create_all()
 
-user1 = User(fName="Test1", lName="User", email="test1user@mail.com", username="TestUser", password=user_manager.hash_password("test"))
-user2 = User(fName="Test2", lName="Admin", email="test2admin@mail.com", username="Test2Admin", password=user_manager.hash_password("test"))
-user3 = User(fName="Test3", lName="User", email="test3user@mail.com", username="Test3User", password=user_manager.hash_password("test"))
-user4 = User(fName="Test4", lName="Admin", email="test4admin@mail.com", username="Test4Admin", password=user_manager.hash_password("test"))
-user5 = User(fName="Test5", lName="Admin", email="test5admin@mail.com", username="Test5Admin", password=user_manager.hash_password("test"))
+user1 = User(fName="Test1", lName="User", email="test1user@mail.com", username="TestUser", active=True, password=user_manager.hash_password("test"))
+user2 = User(fName="Test2", lName="Admin", email="test2admin@mail.com", username="Test2Admin", active=True, password=user_manager.hash_password("test"))
+user3 = User(fName="Test3", lName="User", email="test3user@mail.com", username="Test3User", active=True, password=user_manager.hash_password("test"))
+user4 = User(fName="Test4", lName="Admin", email="test4admin@mail.com", username="Test4Admin", active=True, password=user_manager.hash_password("test"))
+user5 = User(fName="Test5", lName="Admin", email="test5admin@mail.com", username="Test5Admin", active=True, password=user_manager.hash_password("test"))
 
 role1 = Role(name='user')
 role2 = Role(name='admin')
@@ -24,11 +24,11 @@ org1 = Organization(name="Recreation Center", address="1 Test Street", town="Tes
 org2 = Organization(name="Personal Training by Test", address="2 Test Street", town="Test Haven", state="CT", admin=user5)
 org3 = Organization(name="Track and Field Athletics", address="3 Test Street", town="Test Haven", state="CT", admin=user4)
 
-lesson1 = Lesson(name="Beginner Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(11, 0), endTime=time(12, 0), contactEmail=user2, level=1, location="Town Pool", organizer=org1, instructor="Johnny Boy", desc="If you are looking to learn how to swim, this is the class for you. Learn the basics of how to swim. This is open to all ages.", cap=3)
+lesson1 = Lesson(name="Beginner Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(11, 0), endTime=time(12, 0), contactEmail=user2, level=1, location="Town Pool", organizer=org1, instructor="Johnny Boy", desc="If you are looking to learn how to swim, this is the class for you. Learn the basics of how to swim. This is open to all ages.", cap=3, day='Tuesday')
 
-lesson2 = Lesson(name="Advanced Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=user5, level=6, location="Town Pool", organizer=org2, instructor="Sally Girl", desc="This class is meant for advanced swimmers looking to improve all four strokes.", cap=2)
+lesson2 = Lesson(name="Advanced Swimming", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=user5, level=6, location="Town Pool", organizer=org2, instructor="Sally Girl", desc="This class is meant for advanced swimmers looking to improve all four strokes.", cap=2, day='Tuesday')
 
-lesson3 = Lesson(name="Intermediate Running Techniques", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=user4, level=3, location="Football Field/Track", organizer=org3, instructor="Pauly", desc="For intermediate runners. Learn how to improve your running technique for long distance and sprinting.", cap=2)
+lesson3 = Lesson(name="Intermediate Running Techniques", startDate=date(2019, 7, 30), endDate=date(2019, 9, 30), startTime=time(12, 0), endTime=time(1, 0), contactEmail=user4, level=3, location="Football Field/Track", organizer=org3, instructor="Pauly", desc="For intermediate runners. Learn how to improve your running technique for long distance and sprinting.", cap=2, day='Tuesday')
 
 user2.organizer.append(lesson1)
 user5.organizer.append(lesson2)

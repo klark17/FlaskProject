@@ -11,6 +11,7 @@
                 <p class="font-weight-light">Number of people registered is {{ lesson.users.count() }}.</p>
                 <p class="font-weight-light">This class starts on {{ lesson.startDate }} and ends on {{ lesson.endDate }}.
                 It will be from {{ lesson.startTime }} to {{ lesson.endTime }}</p>
+                <p class="font-weight-light">Days: {{ lesson.day }}</p>
                 <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal1">Delete</button>
                 <button type="button" class="btn btn-warning btn-sm m-1"><a class="nav-item nav-link" href="{{ url_for('update_lesson', lesson_id=lesson.id) }}">Update</a></button>
         </div>

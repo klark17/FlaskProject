@@ -7,13 +7,6 @@ from flask_user import current_user, login_required, roles_required
 from sqlalchemy import or_
 
 
-# helper table for many-to-many relationships
-# currently not working
-# classes = db.Table('classes', db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
-#                    db.Column('lesson_id', db.Integer, db.ForeignKey('lesson.id'), primary_key=True))
-# ****https://flask-user.readthedocs.io/en/latest/basic_app.html: can help with admin roles
-
-
 @app.route("/")
 @app.route("/about")
 def about():
@@ -53,6 +46,7 @@ def search():
                                       Lesson.organization == form.organization.data,
                                       Lesson.startDate == form.startDate.data,
                                       Lesson.startTime == form.startTime.data,
+                                      Lesson.day == form.day.data,
                                       Lesson.level == level_choice))
         if len(results.all()) == 0:
             flash('Your search did not yield any results. Please try again.', 'danger')
@@ -62,6 +56,7 @@ def search():
 
 
 @app.route("/register/<int:lesson_id>", methods=['GET', 'POST'])
+@roles_required('user')
 @login_required
 def register(lesson_id):
     form = RegistrationForm()
@@ -75,8 +70,8 @@ def register(lesson_id):
 
 
 # TODO: edit this so it is more efficient
-# related to reading AppenderBaseQuery
 @app.route("/unregister/<int:lesson_id>/delete", methods=['POST'])
+@roles_required('user')
 @login_required
 def unregister(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
@@ -133,11 +128,16 @@ def update_lesson(lesson_id):
     if form.validate_on_submit():
         if form.cap.data and (lesson.users.count() > form.cap.data):
             flash(f'The number of users registered exceeds the maximum enrollment. You can\'t change it.', 'danger')
+        if form.day.data != 'None' and form.startDate.data:
+            date = form.startDate.data
+            if form.day.data != date.strftime('%A'):
+                flash(f'The day must be the same as the start day.', 'danger')
+        elif form.day.data != 'None':
+            if form.day.data != lesson.startDate.strftime('%A'):
+                flash(f'The day must be the same as the start day that is already set.', 'danger')
         else:
-            # could be used to set a day of the week
-            # day.strftime('%A')
             update_lesson_helper(form, lesson)
-            flash(f'Lesson updated successfully.')
+            flash(f'Lesson updated successfully.', 'success')
             return redirect(url_for('admin_profile'))
     return render_template('update_lesson.html', title='Edit Information', form=form, lesson=lesson)
 
@@ -160,8 +160,10 @@ def update_lesson_helper(form, lesson):
     if form.desc.data:
         lesson.desc = form.desc.data
     if form.cap.data:
-        lesson.cap = form.cap
+        lesson.cap = int(form.cap.data)
     if form.instructor.data:
+        lesson.instructor = form.instructor.data
+    if form.day.data:
         lesson.instructor = form.instructor.data
     db.session.commit()
 
@@ -182,17 +184,21 @@ def admin_profile():
 def new_lesson():
     form = LessonForm()
     if form.validate_on_submit():
-        user = current_user
-        lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
-                        startTime=form.startTime.data, endTime=form.endTime.data,
-                        contactEmail=user, level=form.level.data, location=form.location.data,
-                        organization=user.organization.name, instructor=form.instructor.data,
-                        cap=int(form.cap.data))
-        user.organizer.append(lesson)
-        db.session.add(lesson)
-        db.session.commit()
-        flash('The lesson has been created!', 'success')
-        return redirect(url_for('admin_profile'))
+        date = form.startDate.data
+        if form.day.data != 'None' and form.day.data != date.strftime('%A'):
+            flash(f'The day must be the same as the start day.', 'danger')
+        else:
+            user = current_user
+            lesson = Lesson(name=form.name.data, startDate=form.startDate.data, endDate=form.endDate.data,
+                            startTime=form.startTime.data, endTime=form.endTime.data,
+                            contactEmail=user, level=form.level.data, location=form.location.data,
+                            organization=user.organization.name, instructor=form.instructor.data,
+                            cap=int(form.cap.data), day=form.day.data)
+            user.organizer.append(lesson)
+            db.session.add(lesson)
+            db.session.commit()
+            flash('The lesson has been created!', 'success')
+            return redirect(url_for('admin_profile'))
     else:
         flash('Unsuccessful. Please check all fields.', 'danger')
     return render_template('create_lesson.html', title="New Lesson", form=form)
