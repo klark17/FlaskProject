@@ -46,6 +46,7 @@ db.session.add(user3)
 db.session.add(user4)
 db.session.commit()
 
+# https://docs.sqlalchemy.org/en/13/orm/tutorial.html
 
 What needs to happen:
 make copy of user_loader function and login_user 
