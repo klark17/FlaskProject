@@ -23,29 +23,30 @@ class User(db.Model, UserMixin):
     fName = db.Column(db.String(50), nullable=False)
     lName = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
-    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
-    lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('users', lazy='dynamic'))
+    birthday = db.Column(db.Date, nullable=False)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    organizer = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
-    organization = db.relationship('Organization', uselist=False, backref='admin')
-    roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
+    lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('users', lazy='dynamic'))
+    dependents = db.relationship('Dependent', backref=db.backref('guardian', lazy='dynamic'))
+
+    # organization = db.relationship('Organization', uselist=False, backref='admin')
+    # roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
+    # active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
+    # organizer = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
 
     def __repr__(self):
         return f"User('{self.fName}', '{self.username}', '{self.email}', '{self.organization}')"
 
 
-# Define the Role data model
-class Role(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(50), unique=True)
+class Dependent(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    fName = db.Column(db.String(50), nullable=False)
+    lName = db.Column(db.String(50), nullable=False)
+    contactNum = db.Column(db.Sting(12))
+    contactEmail = db.Column(db.String(50), nullable=False)
 
-
-# Define the UserRoles data model
-class UserRoles(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
-    role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
+    def __repr__(self):
+        return f"Dependent('{self.fName}', '{self.contactNum}', '{self.contactEmail}')"
 
 
 class Organization(db.Model):
@@ -55,8 +56,7 @@ class Organization(db.Model):
     address = db.Column(db.String(50), nullable=False)
     town = db.Column(db.String(30), nullable=False)
     state = db.Column(db.String(50), nullable=False)
-    lessons = db.relationship('Lesson', backref='organizer', lazy=True)
-    adminId = db.Column(db.Integer, db.ForeignKey('user.id'))
+    lessons = db.relationship('Lesson', backref='organization', lazy=True)
 
 
 class Lesson(db.Model):

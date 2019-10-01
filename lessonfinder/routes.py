@@ -21,10 +21,8 @@ def signup():
         return redirect(url_for('admin_profile'))
     form = SignupForm()
     if form.validate_on_submit():
-        role = Role.query.filter_by(name="user").first()
-        user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, active=True, username=form.username.data,
-                    password=user_manager.hash_password(form.password.data))
-        user.roles.append(role)
+        user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, birthday=form.birthday.data,
+                    username=form.username.data, password=user_manager.hash_password(form.password.data))
         db.session.add(user)
         db.session.commit()
         flash(f'Account created for {form.username.data}!', 'success')
@@ -56,22 +54,20 @@ def search():
 
 
 @app.route("/register/<int:lesson_id>", methods=['GET', 'POST'])
-@roles_required('user')
 @login_required
 def register(lesson_id):
     form = RegistrationForm()
     lesson = Lesson.query.get_or_404(lesson_id)
     if form.validate_on_submit():
         current_user.lessons.append(lesson)
+        current_user.dependents.append()
         db.session.commit()
         flash(f'You have been registered!', 'success')
         return redirect(url_for('profile'))
     return render_template('register.html', title='Register', form=form, lesson=lesson)
 
 
-# TODO: edit this so it is more efficient
 @app.route("/unregister/<int:lesson_id>/delete", methods=['POST'])
-@roles_required('user')
 @login_required
 def unregister(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
@@ -106,7 +102,6 @@ def profile():
 
 
 @app.route('/update_username', methods=['GET', 'POST'])
-@roles_required('user')
 @login_required
 def update_username():
     form = UpdateUsernameForm()

@@ -17,6 +17,7 @@ class SignupForm(FlaskForm):
     lName = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    birthday = DateField('Birthday', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
@@ -51,7 +52,6 @@ class SearchForm(FlaskForm):
 
 class LessonForm(FlaskForm):
     name = StringField('Name')
-    # type = StringField('Type')
     startDate = DateField('Start Date', render_kw={'placeholder': 'MM/DD/YYYY'})
     endDate = DateField('End Date', render_kw={'placeholder': 'MM/DD/YYYY'})
     startTime = TimeField('Start Time', render_kw={'placeholder': 'HH:MM'})
@@ -66,16 +66,11 @@ class LessonForm(FlaskForm):
     day = SelectField('Day of the Week', choices=days)
 
 
-class OrganizationForm(FlaskForm):
-    name = StringField('Name of Organization')
-    address = StringField('Address')
-    town = StringField('Town/City')
-    state = StringField('State')
-
-
 class RegistrationForm(FlaskForm):
-    name = StringField('Name of Participant')
-    contactEmail = StringField('Contact Email')
+    fName = StringField('First Name of Participant', validators=[DataRequired()])
+    lName = StringField('Last Name of Participant', validators=[DataRequired()])
+    contactNum = StringField('Contact Phone Number (Optional)', render_kw={'placeholder': '123-456-7890'})
+    contactEmail = StringField('Contact Email', validators=[DataRequired()])
     submit = SubmitField('Register')
 
 
