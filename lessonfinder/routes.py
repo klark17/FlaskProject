@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db, user_manager
 from lessonfinder.form import LoginForm, SearchForm, LessonForm, SignupForm, RegistrationForm, levels, UpdateLessonForm, UpdatePasswordForm, UpdateUsernameForm
-from lessonfinder.models import User, Role, Lesson, Organization
+from lessonfinder.models import User, Participant, Lesson, Organization
 # from flask_login import login_user, current_user, logout_user, login_required
 from flask_user import current_user, login_required, roles_required
 from sqlalchemy import or_
@@ -41,7 +41,7 @@ def search():
     level_choice = dict(levels).get(form.level.data)
     if form.validate_on_submit():
         results = Lesson.query.filter(or_(Lesson.location == form.location.data,
-                                      Lesson.organization == form.organization.data,
+                                      Lesson.organizationId == form.organization.data,
                                       Lesson.startDate == form.startDate.data,
                                       Lesson.startTime == form.startTime.data,
                                       Lesson.day == form.day.data,
@@ -92,11 +92,7 @@ def lesson_info(lesson_id):
 @app.route("/profile")
 @login_required
 def profile():
-    role = current_user.roles
-    role = role[0]
-    if current_user.is_authenticated and role.name == 'admin':
-        return redirect(url_for('admin_profile'))
-    elif current_user.is_authenticated:
+    if current_user.is_authenticated:
         lessons = current_user.lessons
     return render_template('profile.html', title="Profile", lessons=lessons)
 

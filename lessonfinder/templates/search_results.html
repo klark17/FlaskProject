@@ -21,7 +21,7 @@
                         <p class="card-text">
                             Contact {{ result.contactEmail.email }} for more information.
                         </p>
-                        {% if result.users.count() == result.cap %}
+                        {% if result.participants.count() + result.selfParticipant.count() == result.cap %}
                             <p class="card-text">This class is full.</p>
                         {% else %}
                             <button id="register" class="btn btn-outline-primary btn-sm">

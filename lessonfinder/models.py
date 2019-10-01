@@ -3,14 +3,10 @@ from flask_user import UserMixin
 
 
 lessons = db.Table('lessons',
-                   db.Column('userId', db.Integer, db.ForeignKey('user.id')),
+                   db.Column('participantId', db.Integer, db.ForeignKey('participant.id')),
+                   db.Column('userParticipantId', db.Integer, db.ForeignKey('user.id')),
                    db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id'))
                    )
-
-organized = db.Table('organized',
-                     db.Column('userId', db.Integer, db.ForeignKey('user.id')),
-                     db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id')),
-                     )
 
 hosting = db.Table('hosting',
                    db.Column('organizationId', db.Integer, db.ForeignKey('organization.id')),
@@ -20,14 +16,15 @@ hosting = db.Table('hosting',
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
+    active = db.Column(db.Boolean(), nullable=False)
     fName = db.Column(db.String(50), nullable=False)
     lName = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(50), unique=True, nullable=False)
     birthday = db.Column(db.Date, nullable=False)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('users', lazy='dynamic'))
-    dependents = db.relationship('Dependent', backref=db.backref('guardian', lazy='dynamic'))
+    lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('selfParticipant', lazy='dynamic'))
+    dependents = db.relationship('Participant', backref=db.backref('guardian'))
 
     # organization = db.relationship('Organization', uselist=False, backref='admin')
     # roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
@@ -35,15 +32,18 @@ class User(db.Model, UserMixin):
     # organizer = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
 
     def __repr__(self):
-        return f"User('{self.fName}', '{self.username}', '{self.email}', '{self.organization}')"
+        return f"User('{self.fName}', '{self.username}', '{self.email}')"
 
 
-class Dependent(db.Model, UserMixin):
+class Participant(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     fName = db.Column(db.String(50), nullable=False)
     lName = db.Column(db.String(50), nullable=False)
-    contactNum = db.Column(db.Sting(12))
+    contactNum = db.Column(db.String(12))
     contactEmail = db.Column(db.String(50), nullable=False)
+    user = db.Column(db.Integer, db.ForeignKey('user.id'))
+    lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('participants', lazy='dynamic'))
+
 
     def __repr__(self):
         return f"Dependent('{self.fName}', '{self.contactNum}', '{self.contactEmail}')"
@@ -52,6 +52,8 @@ class Dependent(db.Model, UserMixin):
 class Organization(db.Model):
     __tablename__ = 'organization'
     id = db.Column(db.Integer, primary_key=True)
+    manager = db.Column(db.String(50), nullable=False)
+    managerEmail = db.Column(db.String(250), nullable=False)
     name = db.Column(db.String(50), nullable=False)
     address = db.Column(db.String(50), nullable=False)
     town = db.Column(db.String(30), nullable=False)
@@ -66,10 +68,10 @@ class Lesson(db.Model):
     endDate = db.Column(db.Date, nullable=False)
     startTime = db.Column(db.Time, nullable=False)
     endTime = db.Column(db.Time, nullable=False)
-    email = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    contactEmail = db.Column(db.String(250), nullable=False)
     level = db.Column(db.Integer)
     location = db.Column(db.String(50), nullable=False)
-    organization = db.Column(db.String(50), db.ForeignKey('organization.id'), nullable=False)
+    organizationId = db.Column(db.Integer(), db.ForeignKey('organization.id'), nullable=False)
     instructor = db.Column(db.String(50), nullable=False)
     desc = db.Column(db.String(200))
     cap = db.Column(db.Integer, nullable=False)
