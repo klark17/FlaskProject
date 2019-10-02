@@ -1,6 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db, user_manager
-from lessonfinder.form import LoginForm, SearchForm, LessonForm, SignupForm, RegistrationForm, levels, UpdateLessonForm, UpdatePasswordForm, UpdateUsernameForm
+from lessonfinder.form import LoginForm, SearchForm, LessonForm, SignupForm, RegistrationForm, levels, \
+    UpdateLessonForm, UpdatePasswordForm, UpdateUsernameForm, EditRegistrationForm
 from lessonfinder.models import User, Participant, Lesson, Organization
 # from flask_login import login_user, current_user, logout_user, login_required
 from flask_user import current_user, login_required, roles_required
@@ -94,7 +95,28 @@ def lesson_info(lesson_id):
 def profile():
     if current_user.is_authenticated:
         lessons = current_user.lessons
-    return render_template('profile.html', title="Profile", lessons=lessons)
+        dependents = current_user.dependents
+        depLessons = []
+        for dependent in dependents:
+            for lesson in dependent.lessons:
+                depLessons.append(lesson)
+        return render_template('profile.html', title="Profile",
+                               lessons=lessons, dependents=dependents, depLessons=depLessons)
+
+
+# TODO: Allow user to edit registration information
+# @app.route("/edit_registration")
+# @login_required
+# def edit_registration():
+#     if current_user.is_authenticated:
+#         lessons = current_user.lessons
+#         dependents = current_user.dependents
+#         depLessons = []
+#         for dependent in dependents:
+#             for lesson in dependent.lessons:
+#                 depLessons.append(lesson)
+#         return render_template('profile.html', title="Profile",
+#                                lessons=lessons, dependents=dependents, depLessons=depLessons)
 
 
 @app.route('/update_username', methods=['GET', 'POST'])

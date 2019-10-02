@@ -106,4 +106,13 @@ class UpdateLessonForm(FlaskForm):
     submit = SubmitField('Submit Changes')
 
 
+class EditRegistrationForm(FlaskForm):
+    fName = StringField('First Name of Participant', validators=[Optional()])
+    lName = StringField('Last Name of Participant', validators=[Optional()])
+    contactNum = StringField('Contact Phone Number', render_kw={'placeholder': '123-456-7890'})
+    contactEmail = StringField('Contact Email', validators=[Optional()])
+    submit = SubmitField('Submit Changes')
+
+
+
 
