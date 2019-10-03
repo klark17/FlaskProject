@@ -54,14 +54,23 @@ def search():
     return render_template('search_lessons.html', title='Search', form=form)
 
 
+# TODO: Fix so registering dependents works
 @app.route("/register/<int:lesson_id>", methods=['GET', 'POST'])
 @login_required
 def register(lesson_id):
     form = RegistrationForm()
     lesson = Lesson.query.get_or_404(lesson_id)
     if form.validate_on_submit():
-        current_user.lessons.append(lesson)
-        current_user.dependents.append()
+        if form.yourself.data:
+            current_user.lessons.append(lesson)
+        elif form.fName.data == "" or form.lName.data == "" or form.contactEmail.data == "":
+            flash(f'You are missing 1 or more fields.' 'danger')
+        else:
+            dependent = Participant(fName=form.fName.data, lName=form.lName.data, contactNum=form.contactNum.data,
+                                    contactEmail=form.contactEmail.data)
+            current_user.dependents.append(dependent)
+            dependent.lessons.append(lesson)
+            db.session.add(dependent)
         db.session.commit()
         flash(f'You have been registered!', 'success')
         return redirect(url_for('profile'))
@@ -100,6 +109,8 @@ def profile():
         for dependent in dependents:
             for lesson in dependent.lessons:
                 depLessons.append(lesson)
+        print(dependents)
+        print(depLessons)
         return render_template('profile.html', title="Profile",
                                lessons=lessons, dependents=dependents, depLessons=depLessons)
 

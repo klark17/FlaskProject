@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, SelectMultipleField, DateTimeField, IntegerField, DateField, TimeField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, SelectMultipleField, \
+    DateTimeField, IntegerField, DateField, TimeField, RadioField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Optional
 from wtforms_components import TimeField, DateField
 from flask_user import current_user
@@ -67,10 +68,11 @@ class LessonForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    fName = StringField('First Name of Participant', validators=[DataRequired()])
-    lName = StringField('Last Name of Participant', validators=[DataRequired()])
+    fName = StringField('First Name of Participant', validators=[Optional()])
+    lName = StringField('Last Name of Participant', validators=[Optional()])
     contactNum = StringField('Contact Phone Number (Optional)', render_kw={'placeholder': '123-456-7890'})
-    contactEmail = StringField('Contact Email', validators=[DataRequired()])
+    contactEmail = StringField('Contact Email', validators=[Optional()])
+    yourself = RadioField('Signing up yourself?', choices=[('value', 'Yes')], validators=[Optional()])
     submit = SubmitField('Register')
 
 
