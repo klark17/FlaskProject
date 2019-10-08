@@ -53,16 +53,19 @@
             </div>
             <div class="row">
                 {% for dependent in dependents %}
-                    {% for depLesson in depLessons %}
+                    <div class="col-md-12">
+                        <h5>{{ dependent.fName }} {{ dependent.lName }} is registered for:</h5>
+                    </div>
+                    {% for lesson in dependent.lessons %}
                     <div class="col-md-6">
                         <!--if not registered for classes, show message, else show registered classes-->
                         <article class="media content-section">
                             <div class="media-body">
-                                <h5 class="article-content">{{ depLesson.name }}</h5>
-                                <p class="font-weight-light">Start/End Date: {{ depLesson.startDate }} to {{ depLesson.endDate }}</p>
-                                <p class="font-weight-light">Time: {{ depLesson.startTime }} - {{ depLesson.endTime }}</p>
+                                <h5 class="article-content">{{ lesson.name }}</h5>
+                                <p class="font-weight-light">Start/End Date: {{ lesson.startDate }} to {{ lesson.endDate }}</p>
+                                <p class="font-weight-light">Time: {{ lesson.startTime }} - {{ lesson.endTime }}</p>
                                 <button class="btn btn-outline-info btn-sm">
-                                    <a class="nav-item nav-link" href="{{ url_for('lesson_info', lesson_id=depLesson.id) }}">
+                                    <a class="nav-item nav-link" href="{{ url_for('lesson_info', lesson_id=lesson.id) }}">
                                         View Information/Unregister
                                     </a>
                                 </button>

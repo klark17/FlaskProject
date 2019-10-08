@@ -54,26 +54,50 @@ def search():
     return render_template('search_lessons.html', title='Search', form=form)
 
 
-# TODO: Fix so registering dependents works
 @app.route("/register/<int:lesson_id>", methods=['GET', 'POST'])
 @login_required
 def register(lesson_id):
     form = RegistrationForm()
     lesson = Lesson.query.get_or_404(lesson_id)
     if form.validate_on_submit():
-        if form.yourself.data:
+        if form.yourself.data and (form.fName.data == "" or form.lName.data == "" or form.contactEmail.data == ""):
+            flash(f'You are missing 1 or more fields.', 'danger')
+        elif not form.yourself.data:
             current_user.lessons.append(lesson)
-        elif form.fName.data == "" or form.lName.data == "" or form.contactEmail.data == "":
-            flash(f'You are missing 1 or more fields.' 'danger')
+            db.session.commit()
+            flash(f'You have been registered!', 'success')
+            return redirect(url_for('profile'))
         else:
+            print(current_user)
+            dependents = current_user.dependents
             dependent = Participant(fName=form.fName.data, lName=form.lName.data, contactNum=form.contactNum.data,
                                     contactEmail=form.contactEmail.data)
-            current_user.dependents.append(dependent)
-            dependent.lessons.append(lesson)
-            db.session.add(dependent)
-        db.session.commit()
-        flash(f'You have been registered!', 'success')
-        return redirect(url_for('profile'))
+            if not dependents:
+                current_user.dependents.append(dependent)
+                dependent.lessons.append(lesson)
+                db.session.add(dependent)
+                db.session.commit()
+                flash(f'Your dependent has been registered!', 'success')
+                return redirect(url_for('profile'))
+            elif dependents:
+                exists = False
+                for dep in dependents:
+                    if dep.fName == dependent.fName and dep.lName == dependent.lName:
+                        exists = True
+                        existingDep = dep
+                        break
+                if exists == True:
+                    existingDep.lessons.append(lesson)
+                    db.session.commit()
+                    flash(f'Your dependent has been registered!', 'success')
+                    return redirect(url_for('profile'))
+                else:
+                    current_user.dependents.append(dependent)
+                    dependent.lessons.append(lesson)
+                    db.session.add(dependent)
+                    db.session.commit()
+                    flash(f'Your dependent has been registered!', 'success')
+                    return redirect(url_for('profile'))
     return render_template('register.html', title='Register', form=form, lesson=lesson)
 
 
@@ -109,25 +133,18 @@ def profile():
         for dependent in dependents:
             for lesson in dependent.lessons:
                 depLessons.append(lesson)
-        print(dependents)
-        print(depLessons)
         return render_template('profile.html', title="Profile",
                                lessons=lessons, dependents=dependents, depLessons=depLessons)
 
 
 # TODO: Allow user to edit registration information
-# @app.route("/edit_registration")
-# @login_required
-# def edit_registration():
-#     if current_user.is_authenticated:
-#         lessons = current_user.lessons
-#         dependents = current_user.dependents
-#         depLessons = []
-#         for dependent in dependents:
-#             for lesson in dependent.lessons:
-#                 depLessons.append(lesson)
-#         return render_template('profile.html', title="Profile",
-#                                lessons=lessons, dependents=dependents, depLessons=depLessons)
+@app.route("/edit_registration")
+@login_required
+def edit_registration():
+    if current_user.is_authenticated:
+        lessons = current_user.lessons
+        dependents = current_user.dependents
+        return render_template('profile.html', title="Profile", lessons=lessons, dependents=dependents)
 
 
 @app.route('/update_username', methods=['GET', 'POST'])
