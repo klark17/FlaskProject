@@ -76,13 +76,6 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
 
-class UpdatePasswordForm(FlaskForm):
-    old_password = PasswordField('Current Password', validators=[DataRequired()])
-    new_password = PasswordField('New Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Submit Changes')
-
-
 class UpdateUsernameForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     submit = SubmitField('Submit Changes')
@@ -93,24 +86,7 @@ class UpdateUsernameForm(FlaskForm):
             raise ValidationError('Username is taken. Choose another.')
 
 
-class UpdateLessonForm(FlaskForm):
-    name = StringField('Name')
-    startDate = DateField('Start Date', validators=[Optional()], render_kw={'placeholder': 'MM/DD/YYYY'})
-    endDate = DateField('End Date', validators=[Optional()], render_kw={'placeholder': 'MM/DD/YYYY'})
-    startTime = TimeField('Start Time', validators=[Optional()], render_kw={'placeholder': 'HH:MM'})
-    endTime = TimeField('End Time', validators=[Optional()], render_kw={'placeholder': 'HH:MM'})
-    level = SelectField('Level', choices=levels[1:7])
-    location = StringField('Location')
-    desc = StringField('Add Description')
-    cap = IntegerField('Max Enrollment', validators=[Optional()])
-    instructor = StringField('Instructor')
-    day = SelectField('Day of the Week', choices=days)
-    submit = SubmitField('Submit Changes')
-
-
 class EditRegistrationForm(FlaskForm):
-    fName = StringField('First Name of Participant', validators=[Optional()])
-    lName = StringField('Last Name of Participant', validators=[Optional()])
     contactNum = StringField('Contact Phone Number', render_kw={'placeholder': '123-456-7890'})
     contactEmail = StringField('Contact Email', validators=[Optional()])
     submit = SubmitField('Submit Changes')

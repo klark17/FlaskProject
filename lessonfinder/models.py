@@ -3,9 +3,13 @@ from flask_user import UserMixin
 
 
 lessons = db.Table('lessons',
-                   db.Column('participantId', db.Integer, db.ForeignKey('participant.id')),
                    db.Column('userParticipantId', db.Integer, db.ForeignKey('user.id')),
-                   db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id'))
+                   db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id')),
+                   )
+
+depLessons = db.Table('depLessons',
+                   db.Column('participantId', db.Integer, db.ForeignKey('participant.id')),
+                   db.Column('lessonId', db.Integer, db.ForeignKey('lesson.id')),
                    )
 
 hosting = db.Table('hosting',
@@ -42,7 +46,7 @@ class Participant(db.Model, UserMixin):
     contactNum = db.Column(db.String(12))
     contactEmail = db.Column(db.String(50), nullable=False)
     user = db.Column(db.Integer, db.ForeignKey('user.id'))
-    lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('participants', lazy='dynamic'))
+    lessons = db.relationship('Lesson', secondary=depLessons, backref=db.backref('participants', lazy='dynamic'))
 
 
     def __repr__(self):

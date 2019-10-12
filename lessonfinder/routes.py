@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db, user_manager
 from lessonfinder.form import LoginForm, SearchForm, LessonForm, SignupForm, RegistrationForm, levels, \
-    UpdateLessonForm, UpdatePasswordForm, UpdateUsernameForm, EditRegistrationForm
+    UpdateUsernameForm, EditRegistrationForm
 from lessonfinder.models import User, Participant, Lesson, Organization
 # from flask_login import login_user, current_user, logout_user, login_required
 from flask_user import current_user, login_required, roles_required
@@ -60,13 +60,13 @@ def register(lesson_id):
     form = RegistrationForm()
     lesson = Lesson.query.get_or_404(lesson_id)
     if form.validate_on_submit():
-        if form.yourself.data and (form.fName.data == "" or form.lName.data == "" or form.contactEmail.data == ""):
-            flash(f'You are missing 1 or more fields.', 'danger')
-        elif not form.yourself.data:
+        if form.yourself.data:
             current_user.lessons.append(lesson)
             db.session.commit()
             flash(f'You have been registered!', 'success')
             return redirect(url_for('profile'))
+        elif form.fName.data == "" or form.lName.data == "" or form.contactEmail.data == "":
+            flash(f'You are missing 1 or more fields.', 'danger')
         else:
             print(current_user)
             dependents = current_user.dependents
@@ -102,45 +102,42 @@ def register(lesson_id):
 
 
 # TODO: work on this
-@app.route("/unregister/<int:lesson_id>/<int:user_id>/delete", methods=['POST'])
+@app.route("/unregister/<int:lesson_id>/delete", methods=['POST'])
 @login_required
-def unregister_user(lesson_id, user_id):
+def unregister_user(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
-    user = User.query.get_or_404(user_id)
-    for user in lesson.users:
-        if current_user.id == user.id:
-            lesson.users.remove(user)
-            db.session.commit()
-            flash('You have unregistered from the lesson.', 'success')
-            break
-        else:
-            continue
+    # for lesson in current_user.lessons:
+    #     if lesson.id == lesson_id:
+    current_user.lessons.remove(lesson)
+    db.session.commit()
+    flash(f'You have successfully unregistered from ' + lesson.name, 'success')
     return redirect(url_for('profile'))
 
 
 # TODO: work on this
-@app.route("/unregister/<int:lesson_id>/<int:dep_id>/delete", methods=['POST'])
+@app.route("/unregister_dep/<int:lesson_id>/delete/<int:dep_id>", methods=['POST'])
 @login_required
 def unregister_dep(lesson_id, dep_id):
     lesson = Lesson.query.get_or_404(lesson_id)
     dependent = Participant.query.get_or_404(dep_id)
-    for user in lesson.users:
-        if current_user.id == user.id:
-            lesson.users.remove(user)
-            db.session.commit()
-            flash('You have unregistered from the lesson.', 'success')
-            break
-        else:
-            continue
+    dependent.lessons.remove(lesson)
+    db.session.commit()
     return redirect(url_for('profile'))
+# participant and selfParticipant
 
-
-@app.route("/lesson_info/<int:lesson_id>/<int:dep_id>")
+@app.route("/dep_lesson_info/<int:lesson_id>/<int:dep_id>")
 @login_required
-def lesson_info(lesson_id, dep_id):
+def dep_lesson_info(lesson_id, dep_id):
     lesson = Lesson.query.get(lesson_id)
     dependent = Participant.query.get(dep_id)
-    return render_template('lesson_info.html', title="Information", lesson=lesson, dependent=dependent)
+    return render_template('dep_lesson_info.html', title="Information", lesson=lesson, dependent=dependent)
+
+
+@app.route("/lesson_info/<int:lesson_id>")
+@login_required
+def lesson_info(lesson_id):
+    lesson = Lesson.query.get(lesson_id)
+    return render_template('lesson_info.html', title="Information", lesson=lesson)
 
 
 @app.route("/profile")
@@ -157,14 +154,24 @@ def profile():
                                lessons=lessons, dependents=dependents, depLessons=depLessons)
 
 
-# TODO: Allow user to edit registration information
-@app.route("/edit_registration")
+@app.route("/edit_registration/<int:dep_id>", methods=['GET', 'POST'])
 @login_required
-def edit_registration():
-    if current_user.is_authenticated:
-        lessons = current_user.lessons
-        dependents = current_user.dependents
-        return render_template('profile.html', title="Profile", lessons=lessons, dependents=dependents)
+def edit_registration(dep_id):
+    form = EditRegistrationForm()
+    dep = Participant.query.get_or_404(dep_id)
+    if form.validate_on_submit():
+        update_registration_helper(form, dep)
+        flash(f'Registration updated successfully.', 'success')
+        return redirect(url_for('profile'))
+    return render_template('edit_registration.html', title="Edit", form=form, dep=dep)
+
+
+def update_registration_helper(form, dep):
+    if form.contactNum.data:
+        dep.contactNum = form.contactNum.data
+    if form.contactEmail.data:
+        dep.contactEmail = form.contactEmail.data
+    db.session.commit()
 
 
 @app.route('/update_username', methods=['GET', 'POST'])
@@ -180,40 +187,14 @@ def update_username():
     return render_template('edit_username.html', title='Change Username', form=form)
 
 
-def update_lesson_helper(form, lesson):
-    if form.name.data:
-        lesson.name = form.name.data
-    if form.startDate.data:
-        lesson.startDate = form.startDate.data
-    if form.endDate.data:
-        lesson.endDate = form.endDate.data
-    if form.startTime.data:
-        lesson.startTime = form.startTime.data
-    if form.endTime.data:
-        lesson.endTime = form.endTime.data
-    if form.level.data:
-        lesson.level = form.level.data
-    if form.location.data:
-        lesson.location = form.location.data
-    if form.desc.data:
-        lesson.desc = form.desc.data
-    if form.cap.data:
-        lesson.cap = int(form.cap.data)
-    if form.instructor.data:
-        lesson.instructor = form.instructor.data
-    if form.day.data:
-        lesson.instructor = form.instructor.data
-    db.session.commit()
-
-
-@app.route("/remove/<int:lesson_id>/delete", methods=['POST'])
-@login_required
-def remove(lesson_id):
-    lesson = Lesson.query.get_or_404(lesson_id)
-    db.session.delete(lesson)
-    db.session.commit()
-    flash('The lesson has been removed', 'success')
-    return redirect(url_for('admin_profile'))
+# @app.route("/remove/<int:lesson_id>/delete", methods=['POST'])
+# @login_required
+# def remove(lesson_id):
+#     lesson = Lesson.query.get_or_404(lesson_id)
+#     db.session.delete(lesson)
+#     db.session.commit()
+#     flash('The lesson has been removed', 'success')
+#     return redirect(url_for('admin_profile'))
 
 
 # @app.route("/update_lesson/<int:lesson_id>/", methods=['GET', 'POST'])
