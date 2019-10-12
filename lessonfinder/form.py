@@ -68,11 +68,10 @@ class LessonForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    fName = StringField('First Name of Participant', validators=[Optional()])
-    lName = StringField('Last Name of Participant', validators=[Optional()])
-    contactNum = StringField('Contact Phone Number (Optional)', render_kw={'placeholder': '123-456-7890'})
-    contactEmail = StringField('Contact Email', validators=[Optional()])
-    yourself = RadioField('Signing up yourself?', choices=[('value', 'Yes')], validators=[Optional()])
+    fName = StringField('First Name of Participant', validators=[DataRequired()])
+    lName = StringField('Last Name of Participant', validators=[DataRequired()])
+    contactNum = StringField('Contact Phone Number (Optional)', validators=[Optional()], render_kw={'placeholder': '123-456-7890'})
+    contactEmail = StringField('Contact Email', validators=[DataRequired()])
     submit = SubmitField('Register')
 
 

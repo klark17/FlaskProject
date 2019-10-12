@@ -53,6 +53,14 @@ def search():
             return search_results(results)
     return render_template('search_lessons.html', title='Search', form=form)
 
+@app.route('/register_yourself/<int:lesson_id>', methods=['GET', 'POST'])
+def register_yourself(lesson_id):
+    lesson= Lesson.query.get_or_404(lesson_id)
+    current_user.lessons.append(lesson)
+    db.session.commit()
+    flash(f'You have successfully registered!', 'success')
+    return redirect('/profile')
+
 
 @app.route("/register/<int:lesson_id>", methods=['GET', 'POST'])
 @login_required
@@ -60,44 +68,36 @@ def register(lesson_id):
     form = RegistrationForm()
     lesson = Lesson.query.get_or_404(lesson_id)
     if form.validate_on_submit():
-        if form.yourself.data:
-            current_user.lessons.append(lesson)
+        print(current_user)
+        dependents = current_user.dependents
+        dependent = Participant(fName=form.fName.data, lName=form.lName.data, contactNum=form.contactNum.data,
+                                contactEmail=form.contactEmail.data)
+        if not dependents:
+            current_user.dependents.append(dependent)
+            dependent.lessons.append(lesson)
+            db.session.add(dependent)
             db.session.commit()
-            flash(f'You have been registered!', 'success')
+            flash(f'Your dependent has been registered!', 'success')
             return redirect(url_for('profile'))
-        elif form.fName.data == "" or form.lName.data == "" or form.contactEmail.data == "":
-            flash(f'You are missing 1 or more fields.', 'danger')
-        else:
-            print(current_user)
-            dependents = current_user.dependents
-            dependent = Participant(fName=form.fName.data, lName=form.lName.data, contactNum=form.contactNum.data,
-                                    contactEmail=form.contactEmail.data)
-            if not dependents:
+        elif dependents:
+            exists = False
+            for dep in dependents:
+                if dep.fName == dependent.fName and dep.lName == dependent.lName:
+                    exists = True
+                    existingDep = dep
+                    break
+            if exists == True:
+                existingDep.lessons.append(lesson)
+                db.session.commit()
+                flash(f'Your dependent has been registered!', 'success')
+                return redirect(url_for('profile'))
+            else:
                 current_user.dependents.append(dependent)
                 dependent.lessons.append(lesson)
                 db.session.add(dependent)
                 db.session.commit()
                 flash(f'Your dependent has been registered!', 'success')
                 return redirect(url_for('profile'))
-            elif dependents:
-                exists = False
-                for dep in dependents:
-                    if dep.fName == dependent.fName and dep.lName == dependent.lName:
-                        exists = True
-                        existingDep = dep
-                        break
-                if exists == True:
-                    existingDep.lessons.append(lesson)
-                    db.session.commit()
-                    flash(f'Your dependent has been registered!', 'success')
-                    return redirect(url_for('profile'))
-                else:
-                    current_user.dependents.append(dependent)
-                    dependent.lessons.append(lesson)
-                    db.session.add(dependent)
-                    db.session.commit()
-                    flash(f'Your dependent has been registered!', 'success')
-                    return redirect(url_for('profile'))
     return render_template('register.html', title='Register', form=form, lesson=lesson)
 
 

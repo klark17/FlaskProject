@@ -25,8 +25,13 @@
                             <p class="card-text">This class is full.</p>
                         {% else %}
                             <button id="register" class="btn btn-outline-primary btn-sm">
+                                <a class="card-link" href="{{ url_for('register_yourself', lesson_id=result.id) }}">
+                                    Register Yourself
+                                </a>
+                            </button>
+                            <button id="register" class="btn btn-outline-primary btn-sm">
                                 <a class="card-link" href="{{ url_for('register', lesson_id=result.id) }}">
-                                    Register
+                                    Register Dependent
                                 </a>
                             </button>
                         {% endif %}

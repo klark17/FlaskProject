@@ -64,19 +64,6 @@
                             {{ form.contactNum(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
-                    <div class="form-group">
-                        {{ form.yourself.label(class="form-control-label") }}
-                        {% if form.yourself.errors %}
-                            {{ form.yourself(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.yourself.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.yourself(class="form-control form-control-lg") }}
-                        {% endif %}
-                    </div>
                 </fieldset>
                 <div class="form-group">
                     {{ form.submit(class="btn btn-outline-info") }}
