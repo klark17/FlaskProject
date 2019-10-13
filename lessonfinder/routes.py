@@ -103,20 +103,21 @@ def register(lesson_id):
     return render_template('register.html', title='Register', form=form, lesson=lesson)
 
 
-# TODO: work on this
 @app.route("/unregister/<int:lesson_id>/delete", methods=['POST'])
 @login_required
 def unregister_user(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
-    # for lesson in current_user.lessons:
-    #     if lesson.id == lesson_id:
-    current_user.lessons.remove(lesson)
-    db.session.commit()
-    flash(f'You have successfully unregistered from ' + lesson.name, 'success')
+    for user in lesson.selfParticipant:
+        if current_user.id == user.id:
+            lesson.selfParticipant.remove(user)
+            db.session.commit()
+            flash(f'You have successfully unregistered from ' + lesson.name, 'success')
+            break
+        else:
+            continue
     return redirect(url_for('profile'))
 
 
-# TODO: work on this
 @app.route("/unregister_dep/<int:lesson_id>/delete/<int:dep_id>", methods=['POST'])
 @login_required
 def unregister_dep(lesson_id, dep_id):
