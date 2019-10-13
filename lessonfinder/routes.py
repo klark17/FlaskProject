@@ -53,9 +53,11 @@ def search():
             return search_results(results)
     return render_template('search_lessons.html', title='Search', form=form)
 
+
 @app.route('/register_yourself/<int:lesson_id>', methods=['GET', 'POST'])
+@login_required
 def register_yourself(lesson_id):
-    lesson= Lesson.query.get_or_404(lesson_id)
+    lesson = Lesson.query.get_or_404(lesson_id)
     current_user.lessons.append(lesson)
     db.session.commit()
     flash(f'You have successfully registered!', 'success')
