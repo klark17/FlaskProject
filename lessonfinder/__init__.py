@@ -13,7 +13,9 @@ app.config['USER_ENABLE_EMAIL'] = False
 app.config['USER_ALLOW_LOGIN_WITHOUT_CONFIRMED_EMAIL'] = True
 app.config['CSRF_ENABLED'] = True
 # app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+# USER_USER_SESSION_EXPIRATION = 3600 -- set session expiration
 db = SQLAlchemy(app)
+
 
 # login_manager = LoginManager(app)
 # login_manager.login_view = 'login'
