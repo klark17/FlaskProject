@@ -58,9 +58,13 @@ def search():
 @login_required
 def register_yourself(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
-    current_user.lessons.append(lesson)
-    db.session.commit()
-    flash(f'You have successfully registered!', 'success')
+    if lesson in current_user.lessons:
+        flash(f'You are already registered for this lesson. Please search for another one.', 'danger')
+        return redirect('/search')
+    else:
+        current_user.lessons.append(lesson)
+        db.session.commit()
+        flash(f'You have successfully registered!', 'success')
     return redirect('/profile')
 
 
@@ -89,9 +93,13 @@ def register(lesson_id):
                     existingDep = dep
                     break
             if exists == True:
-                existingDep.lessons.append(lesson)
-                db.session.commit()
-                flash(f'Your dependent has been registered!', 'success')
+                if lesson in existingDep.lessons:
+                    flash(f'You\'re dependent is already registered for this lesson. Please search for another one.', 'danger')
+                    return redirect('/search')
+                else:
+                    existingDep.lessons.append(lesson)
+                    db.session.commit()
+                    flash(f'Your dependent has been registered!', 'success')
                 return redirect(url_for('profile'))
             else:
                 current_user.dependents.append(dependent)
