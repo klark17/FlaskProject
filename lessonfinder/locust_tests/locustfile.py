@@ -1,36 +1,18 @@
 from locust import HttpLocust, TaskSet, task
-
-
-# locust -f locustfile.py --no-web -c 1000 -r 100 --host=htps://127.0.0.1:5000
-# locust -f locustfile.py --host=http://127.0.0.1:5000
-def login(l):
-    l.client.post("/user/sign-in", {"username":"Test1User", "password":"test"})
-
-
-def logout(l):
-    l.client.post("/user/sign-out", {"username":"Test1User", "password":"test"})
-
-
-def index(l):
-    l.client.get("/")
-
-
-def profile(l):
-    l.client.get("/profile")
+import random
 
 
 class UserBehavior(TaskSet):
-    tasks = {index: 2, profile: 1}
 
     def on_start(self):
         self.client.post("/user/sign-in", {"username":"Test1User", "password":"test"})
 
-    @task
+    @task(2)
     def index(self):
         self.client.get("/about")
 
-    @task
-    def about(self):
+    @task(1)
+    def profile(self):
         self.client.get("/profile")
 
     def on_stop(self):
