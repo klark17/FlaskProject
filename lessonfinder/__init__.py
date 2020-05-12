@@ -1,3 +1,4 @@
+import logging
 from flask import Flask, render_template, url_for, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
 # from flask_login import LoginManager
@@ -12,6 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['USER_ENABLE_EMAIL'] = False
 app.config['USER_ALLOW_LOGIN_WITHOUT_CONFIRMED_EMAIL'] = True
 app.config['CSRF_ENABLED'] = True
+app.config['USER_USER_SESSION_EXPIRATION'] = 720
 # app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 # USER_USER_SESSION_EXPIRATION = 3600 -- set session expiration
 db = SQLAlchemy(app)
@@ -24,12 +26,7 @@ db = SQLAlchemy(app)
 from lessonfinder.models import User
 from lessonfinder.form import LoginForm
 
-
 user_manager = UserManager(app, db, User)
-# user_manager = UserManager(app, db, User)
-
-# admin = Admin(app)
-# admin.add_view(ModelView(Lesson, db.session))
 
 from lessonfinder import routes
 

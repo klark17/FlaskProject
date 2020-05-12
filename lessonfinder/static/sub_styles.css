@@ -109,6 +109,10 @@ a.article-title:hover {
   z-index: -1;
 }
 
+.navbar-toggler-icon {
+  background-color: #428bca;
+}
+
 /* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;

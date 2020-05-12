@@ -63,3 +63,30 @@ CREATE TABLE lesson (
 	FOREIGN KEY (instructor) REFERENCES instructor(fname)
 );
 
+CREATE TABLE users (
+	id INT NOT NULL UNIQUE,
+	fName VARCHAR(50),
+	lName VARCHAR(50),
+	username VARCHAR(30) NOT NULL UNIQUE,
+	password VARCHAR(30) NOT NULL,
+	email VARCHAR(50) NOT NULL UNIQUE,
+	lessonId INT,
+	PRIMARY KEY (id),
+	FOREIGN KEY (lessonId) REFERENCES lesson(id)
+);
+
+CREATE TABLE lesson (
+	id INT NOT NULL UNIQUE,
+	name VARCHAR(50) NOT NULL,
+	startDate DATETIME NOT NULL,
+	endDate DATETIME NOT NULL,
+	startTime DATETIME NOT NULL,
+	endTime DATETIME NOT NULL,
+	day VARCHAR(10),
+	difficulty VARCHAR(20),
+	location VARCHAR(60) NOT NULL,
+	instructor VARCHAR(50) NOT NULL,
+	registered INT UNIQUE,
+	PRIMARY KEY (id),
+	FOREIGN KEY (registered) REFERENCES users(id)
+);

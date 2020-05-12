@@ -1,1 +1,7 @@
 *.db
+lessonfinder/*.txt
+lessonfinder/*/*.txt
+*/notes
+__pycache__/lesson_finder.cpython-36.pyc
+lessonfinder/locust_tests/__pycache__/
+lessonfinder/__pycache__/

@@ -16,6 +16,11 @@ html, body {
   text-align: center;
 }
 
+.navbar-toggler-icon {
+  background-color: #428bca;
+  color: white;
+}
+
 .parallax2, .jumbotron {
   min-height: 100%;
   min-width: 100%;
