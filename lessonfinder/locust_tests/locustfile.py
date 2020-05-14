@@ -3,6 +3,7 @@ from werkzeug.test import Client
 from werkzeug.testapp import test_app
 import time
 import pdb
+import re
 # locust -f locustfile.py --no-web -c 1000 -r 100 --host=htps://127.0.0.1:5000
 # locust -f locustfile.py --host=http://127.0.0.1:5000
 
@@ -35,27 +36,23 @@ class UserBehavior(TaskSet):
 
     def on_start(self):
         response = self.client.get('/user/sign-in')
-        csrftoken = response.cookies['csrftoken']
-        self.client.post('/user/sign-in',
-                         {'username': 'username', 'password': 'P455w0rd'},
-                         headers={'X-CSRFToken': csrftoken})
+        pattern = 'csrf_token.*csrf_token.*value[=]["](.*)["]'
+        result = re.search(pattern, response.text)
+        csrf_token = str(result.group(1))
+        self.client.post('/user/sign-in', {'username': 'Test1User',
+                                           'password': 'test',
+                                           'next': '/',
+                                           'reg_next': '/',
+                                           'csrf_token': csrf_token,
+                                           'submit': 'Sign in'})
 
     @task
     def index(self):
         self.client.get("/about")
 
     @task
-    def profile(locust):
+    def profile(self):
         self.client.request("get", "/profile", auth=("Test1User", "test"))
-
-    @task
-    def search(self):
-        self.client.get("/search")
-        self.client.post("/search", {"location":"Town Pool"})
-
-    @task
-    def register(self):
-        self.client.get('/register_yourself/1')
 
     def on_stop(self):
         self.client.post("/user/sign-out", {"username":"Test1User", "password":"test"})
