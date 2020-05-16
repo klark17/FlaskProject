@@ -14,15 +14,15 @@ class NewUser(TaskSet):
     def home(self):
         self.client.get("/about")
 
-    # @seq_task(1)
-    # def search(self):
-    #     params = {}
-    #     self.client.get("/search")
-    #     self.client.post("/search", params)
+    @seq_task(1)
+    def search(self):
+        params = {}
+        self.client.get("/search")
+        self.client.post("/search", params)
 
-    # @seq_task(2)
-    # def failed_register(self):
-    #     self.client.post("/register")
+    @seq_task(2)
+    def failed_register(self):
+        self.client.post("/register")
 
     @task
     def signup(self):
