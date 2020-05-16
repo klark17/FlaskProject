@@ -80,13 +80,15 @@ for i in range(1, 201):
 	startDate = date(year, month, day)
 	endDate = startDate + timedelta(random.randrange(30, 61))
 	day_of_week = calendar.day_name[startDate.weekday()]
+	startTime = random.randrange(7, 19)
+	endTime = startTime + 1
 
 	# create lesson
 	lesson = Lesson(name="Lesson " + id,
 					startDate=startDate,
 					endDate=endDate,
-					startTime=time(11, 0),
-					endTime=time(12, 0),
+					startTime=time(startTime, 0),
+					endTime=time(endTime, 0),
 					contactEmail="manager" + str(org.id) + "@mail.com",
 					level=random.randrange(1, 7),
 					location="Recreation Center " + str(org.id),
