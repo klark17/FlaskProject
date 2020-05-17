@@ -22,7 +22,7 @@ def signup():
         return redirect(url_for('admin_profile'))
     form = SignupForm()
     if form.validate_on_submit():
-        user = User(fName=form.fName.data, lName=form.lName.data, email=form.email.data, birthday=form.birthday.data,
+        user = User(active=True, fName=form.fName.data, lName=form.lName.data, email=form.email.data, birthday=form.birthday.data,
                     username=form.username.data, password=user_manager.hash_password(form.password.data))
         db.session.add(user)
         db.session.commit()
