@@ -5,3 +5,4 @@ lessonfinder/*/*.txt
 __pycache__/lesson_finder.cpython-36.pyc
 lessonfinder/locust_tests/__pycache__/
 lessonfinder/__pycache__/
+lessonfinder/site.db
