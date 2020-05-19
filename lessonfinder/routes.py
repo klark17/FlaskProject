@@ -42,7 +42,6 @@ def search():
     level_choice = dict(levels).get(form.level.data)
     if form.validate_on_submit():
         results = Lesson.query.filter(or_(Lesson.location == form.location.data,
-                                      Lesson.organizationId == form.organization.data,
                                       Lesson.startDate == form.startDate.data,
                                       Lesson.startTime == form.startTime.data,
                                       Lesson.day == form.day.data,

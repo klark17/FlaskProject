@@ -44,7 +44,6 @@ class LoginForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     location = StringField('Location')
-    organization = StringField('Organization')
     startDate = DateField('Start Date', validators=[Optional()])
     startTime = TimeField('Start Time', validators=[Optional()])
     day = SelectField('Day of the Week', choices=days)
