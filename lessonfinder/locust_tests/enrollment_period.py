@@ -1,4 +1,4 @@
-from locust import HttpUser, SequentialTaskSet, task
+from locust import HttpUser, SequentialTaskSet, task, between
 import re
 import datetime
 from datetime import date, time
@@ -18,9 +18,9 @@ def find_token(resp):
 
 # sets a hash of params to search for
 def search_params(response):
-    year = random.randrange(2020, 2021)
-    month = random.randrange(1, 13)
-    day = random.randrange(1, 29)
+    # year = random.randrange(2020, 2021)
+    # month = random.randrange(1, 13)
+    # day = random.randrange(1, 29)
     # startDate = date(year, month, day)
     # startTime = random.randrange(7, 19)
     day_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -54,7 +54,7 @@ def find_lesson_id(resp, pattern):
     return lesson
 
 
-class ExistingUser(SequentialTaskSet):
+class ExistingUserBehavior(SequentialTaskSet):
 
     id = str(random.randrange(1, 501))
     username = None
@@ -62,11 +62,12 @@ class ExistingUser(SequentialTaskSet):
     round = 1
 
     def on_start(self):
+        print("Starting existing user...")
         response = self.client.get('/user/sign-in')
         csrf_token = find_token(response)
         self.username = 'Test' + self.id + 'User'
         self.password = 'thi5IztesT' + self.id
-        loggedin = self.client.post('/user/sign-in', {'username': self.username,
+        self.client.post('/user/sign-in', {'username': self.username,
                                            'password': self.password,
                                            'next': '/',
                                            'reg_next': '/',
@@ -82,13 +83,9 @@ class ExistingUser(SequentialTaskSet):
     def successful_register(self):
         get_search = self.client.get("/search")
         response = self.client.post("/search", search_params(get_search))
-        print(self.round)
         if self.round == 1:
             link = find_lesson_id(response, '/register_yourself/\d*')
-            print("Hitting a successful existing register with " + link)
             response = self.client.request("post", link, auth=(self.username, self.password))
-            print("Existing user has registered for " + link + " with code:")
-            print(response)
             self.round = self.round + 1
         else:
             link = find_lesson_id(response, '/register/\d*')
@@ -112,13 +109,14 @@ class ExistingUser(SequentialTaskSet):
         self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
 
 
-class NewUser(SequentialTaskSet):
+class NewUserBehavior(SequentialTaskSet):
     id = str(random.randrange(501, 1001))
     username = None
     password = None
 
     @task
     def home(self):
+        print("Starting new user...")
         self.client.get("/about")
 
     @task
@@ -161,10 +159,45 @@ class NewUser(SequentialTaskSet):
         self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
 
 
+class RandomBehavior(SequentialTaskSet):
+    id = str(random.randrange(1, 501))
+    username = None
+    password = None
+    round = 1
+
+    def on_start(self):
+        print("starting change name...")
+        response = self.client.get('/user/sign-in')
+        csrf_token = find_token(response)
+        self.username = 'Test' + self.id + 'User'
+        self.password = 'thi5IztesT' + self.id
+        self.client.post('/user/sign-in', {'username': self.username,
+                                           'password': self.password,
+                                           'next': '/',
+                                           'reg_next': '/',
+                                           'csrf_token': csrf_token,
+                                           'submit': 'Sign in'})
+
+    @task
+    def profile(self):
+        self.client.request("get", "/profile", auth=(self.username, self.password))
+
+    @task
+    def edit_username(self):
+        response = self.client.get("/update_username")
+        csrf_token = find_token(response)
+        self.client.post('/update_username', {'username': self.username + "Changed",
+                                           'csrf_token': csrf_token,
+                                           'submit': 'Submit Changes'})
+
+    def on_stop(self):
+        self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
+
+
 class WebsiteUser(HttpUser):
-    tasks = [
-        NewUser,
-        ExistingUser
-    ]
-    min_wait = 10000
-    max_wait = 30000
+    tasks = {
+        NewUserBehavior: 1,
+        ExistingUserBehavior: 4,
+        RandomBehavior: 1
+    }
+    wait_time = between(3.0, 10.5)
