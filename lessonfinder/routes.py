@@ -53,7 +53,7 @@ def search():
     return render_template('search_lessons.html', title='Search', form=form)
 
 
-@app.route('/register_yourself/<int:lesson_id>', methods=['GET', 'POST'])
+@app.route('/register_yourself/<int:lesson_id>', methods=['POST'])
 @login_required
 def register_yourself(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)

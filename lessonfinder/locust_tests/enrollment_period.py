@@ -1,4 +1,4 @@
-from locust import HttpUser, SequentialTaskSet, task, between
+from locust import HttpUser, SequentialTaskSet, task, between, TaskSet
 import re
 import datetime
 from datetime import date, time
@@ -27,7 +27,7 @@ def search_params(response):
 
     params = {"level": random.randrange(1, 7),
               "location": "Recreation Center " + str(random.randrange(1, 31)),
-              "day": day_of_week,
+              "day": day_of_week[random.randrange(0, len(day_of_week))],
               "csrf_token": find_token(response)}
     return params
 
@@ -59,7 +59,6 @@ class ExistingUserBehavior(SequentialTaskSet):
     id = str(random.randrange(1, 501))
     username = None
     password = None
-    round = 1
 
     def on_start(self):
         print("Starting existing user...")
@@ -83,23 +82,24 @@ class ExistingUserBehavior(SequentialTaskSet):
     def successful_register(self):
         get_search = self.client.get("/search")
         response = self.client.post("/search", search_params(get_search))
-        if self.round == 1:
+        register_self = random.randrange(1, 3)
+        if register_self == 1:
             link = find_lesson_id(response, '/register_yourself/\d*')
-            response = self.client.request("post", link, auth=(self.username, self.password))
-            self.round = self.round + 1
+            self.client.request("post", link, auth=(self.username, self.password))
         else:
             link = find_lesson_id(response, '/register/\d*')
             response = self.client.request("get", link, auth=(self.username, self.password))
+            dep = "Dependent" + self.id
+            email = "test" + self.id + "user@mail.com"
             self.client.request("post",
                                 link,
                                 params={
-                                "fName": "Dependent " + self.id,
+                                "fName": dep,
                                 "lName": "User",
-                                "contactEmail": "",
+                                "contactEmail": email,
                                 "csrf_token": find_token(response)
                                },
                                auth=(self.username, self.password))
-            self.round = self.round - 1
 
     @task
     def index(self):
@@ -159,11 +159,10 @@ class NewUserBehavior(SequentialTaskSet):
         self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
 
 
-class RandomBehavior(SequentialTaskSet):
+class RandomBehavior(TaskSet):
     id = str(random.randrange(1, 501))
     username = None
     password = None
-    round = 1
 
     def on_start(self):
         print("starting change name...")
@@ -190,14 +189,22 @@ class RandomBehavior(SequentialTaskSet):
                                            'csrf_token': csrf_token,
                                            'submit': 'Submit Changes'})
 
+    @task
+    def remove_lesson(self):
+        pass
+        # this method will remove a lesson from a user's profile if the lesson exists
+        # view lesson information
+        # submit delete lesson
+
     def on_stop(self):
         self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
 
 
 class WebsiteUser(HttpUser):
-    tasks = {
-        NewUserBehavior: 1,
-        ExistingUserBehavior: 4,
-        RandomBehavior: 1
-    }
+    # tasks = {
+    #     NewUserBehavior: 1,
+    #     ExistingUserBehavior: 4,
+    #     RandomBehavior: 1
+    # }
+    tasks = [ExistingUserBehavior]
     wait_time = between(3.0, 10.5)
