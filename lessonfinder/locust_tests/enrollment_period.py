@@ -50,8 +50,11 @@ def signup_params(num):
 # finds a random lesson on the page to signup for
 def find_lesson_id(resp, pattern):
     result = re.search(pattern, resp.text)
-    lesson = str(result.group(0))
-    return lesson
+    if result:
+        lesson = str(result.group(0))
+        return lesson
+    else:
+        return False
 
 
 class ExistingUserBehavior(SequentialTaskSet):
@@ -153,7 +156,7 @@ class NewUserBehavior(SequentialTaskSet):
         get_search = self.client.get("/search")
         response = self.client.post("/search", search_params(get_search))
         link = find_lesson_id(response, '/register_yourself/\d*')
-        reg = self.client.request("post", link, auth=(self.username, self.password))
+        self.client.request("post", link, auth=(self.username, self.password))
 
     def on_stop(self):
         self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
@@ -165,7 +168,7 @@ class RandomBehavior(TaskSet):
     password = None
 
     def on_start(self):
-        print("starting change name...")
+        print("starting random behavior...")
         response = self.client.get('/user/sign-in')
         csrf_token = find_token(response)
         self.username = 'Test' + self.id + 'User'
@@ -183,28 +186,82 @@ class RandomBehavior(TaskSet):
 
     @task
     def edit_username(self):
-        response = self.client.get("/update_username")
+        response = self.client.request("get",
+                                       "/update_username",
+                                       auth=(self.username, self.password))
         csrf_token = find_token(response)
-        self.client.post('/update_username', {'username': self.username + "Changed",
-                                           'csrf_token': csrf_token,
-                                           'submit': 'Submit Changes'})
+        self.client.request('post',
+                            '/update_username',
+                            params={'username': self.username + "Changed",
+                                    'csrf_token': csrf_token,
+                                    'submit': 'Submit Changes'},
+                            auth=(self.username, self.password))
+
+    @task
+    def successful_register(self):
+        get_search = self.client.get("/search")
+        response = self.client.post("/search", search_params(get_search))
+        register_self = random.randrange(1, 3)
+        if register_self == 1:
+            link = find_lesson_id(response, '/register_yourself/\d*')
+            self.client.request("post", link, auth=(self.username, self.password))
+        else:
+            link = find_lesson_id(response, '/register/\d*')
+            response = self.client.request("get", link, auth=(self.username, self.password))
+            dep = "Dependent" + self.id
+            email = "test" + self.id + "user@mail.com"
+            self.client.request("post",
+                                link,
+                                params={
+                                    "fName": dep,
+                                    "lName": "User",
+                                    "contactEmail": email,
+                                    "csrf_token": find_token(response)
+                                },
+                                auth=(self.username, self.password))
 
     @task
     def remove_lesson(self):
-        pass
-        # this method will remove a lesson from a user's profile if the lesson exists
-        # view lesson information
-        # submit delete lesson
+        profile_resp = self.client.request("get", "/profile", auth=(self.username, self.password))
+        lesson_link = find_lesson_id(profile_resp, '/lesson_info/\d*\?user_id=\d*')
+        if lesson_link:
+            lesson_info = self.client.get(lesson_link)
+            unregister_link = find_lesson_id(lesson_info, '/unregister/\d*/delete')
+            self.client.request("post",
+                                unregister_link,
+                                auth=(self.username, self.password))
+        else:
+            pass
+
+    @task
+    def update_dependent(self):
+        profile_resp = self.client.request("get", "/profile", auth=(self.username, self.password))
+        lesson_link = find_lesson_id(profile_resp, '/dep_lesson_info/\d*/\d*')
+        if lesson_link:
+            lesson_info = self.client.get(lesson_link)
+            edit_info_link = find_lesson_id(lesson_info, '/edit_registration/\d*')
+            edit_page = self.client.get(edit_info_link)
+            csrf_token = find_token(edit_page)
+            new_email = "change" + self.id + "email@mail.com"
+            new_phone = "203-123-45" + self.id
+            self.client.post("post",
+                             edit_page,
+                             params={'contactEmail': new_email,
+                                     'contactNum': new_phone,
+                                     'csrf_token': csrf_token,
+                                     'submit': 'Submit Changes'},
+                             auth=(self.username, self.password))
+        else:
+            pass
 
     def on_stop(self):
         self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
 
 
 class WebsiteUser(HttpUser):
-    # tasks = {
-    #     NewUserBehavior: 1,
-    #     ExistingUserBehavior: 4,
-    #     RandomBehavior: 1
-    # }
-    tasks = [ExistingUserBehavior]
+    tasks = {
+        NewUserBehavior: 1,
+        ExistingUserBehavior: 10,
+        RandomBehavior: 5
+    }
     wait_time = between(3.0, 10.5)
