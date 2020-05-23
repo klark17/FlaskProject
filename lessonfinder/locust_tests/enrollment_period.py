@@ -22,7 +22,7 @@ def search_params(response):
     # month = random.randrange(1, 13)
     # day = random.randrange(1, 29)
     # startDate = date(year, month, day)
-    # startTime = random.randrange(7, 19)
+    # startTime = time(random.randrange(7, 19))
     day_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
     params = {"level": random.randrange(1, 7),
@@ -88,21 +88,23 @@ class ExistingUserBehavior(SequentialTaskSet):
         register_self = random.randrange(1, 3)
         if register_self == 1:
             link = find_lesson_id(response, '/register_yourself/\d*')
-            self.client.request("post", link, auth=(self.username, self.password))
+            if link:
+                self.client.request("post", link, auth=(self.username, self.password))
         else:
             link = find_lesson_id(response, '/register/\d*')
-            response = self.client.request("get", link, auth=(self.username, self.password))
-            dep = "Dependent" + self.id
-            email = "test" + self.id + "user@mail.com"
-            self.client.request("post",
-                                link,
-                                params={
-                                "fName": dep,
-                                "lName": "User",
-                                "contactEmail": email,
-                                "csrf_token": find_token(response)
-                               },
-                               auth=(self.username, self.password))
+            if link:
+                response = self.client.request("get", link, auth=(self.username, self.password))
+                dep = "Dependent" + self.id
+                email = "test" + self.id + "user@mail.com"
+                self.client.request("post",
+                                    link,
+                                    params={
+                                    "fName": dep,
+                                    "lName": "User",
+                                    "contactEmail": email,
+                                    "csrf_token": find_token(response)
+                                   },
+                                   auth=(self.username, self.password))
 
     @task
     def index(self):
@@ -198,15 +200,19 @@ class RandomBehavior(TaskSet):
                             auth=(self.username, self.password))
 
     @task
-    def successful_register(self):
+    def successful_self_register(self):
         get_search = self.client.get("/search")
         response = self.client.post("/search", search_params(get_search))
-        register_self = random.randrange(1, 3)
-        if register_self == 1:
-            link = find_lesson_id(response, '/register_yourself/\d*')
+        link = find_lesson_id(response, '/register_yourself/\d*')
+        if link:
             self.client.request("post", link, auth=(self.username, self.password))
-        else:
-            link = find_lesson_id(response, '/register/\d*')
+
+    @task
+    def successful_dep_register(self):
+        get_search = self.client.get("/search")
+        response = self.client.post("/search", search_params(get_search))
+        link = find_lesson_id(response, '/register/\d*')
+        if link:
             response = self.client.request("get", link, auth=(self.username, self.password))
             dep = "Dependent" + self.id
             email = "test" + self.id + "user@mail.com"
@@ -254,14 +260,26 @@ class RandomBehavior(TaskSet):
         else:
             pass
 
+    @task
+    def delete_dependent(self):
+        profile_resp = self.client.request("get", "/profile", auth=(self.username, self.password))
+        delete_link = find_lesson_id(profile_resp, '/remove_dep/\d*')
+        if delete_link:
+            self.client.request("post",
+                                delete_link,
+                                auth=(self.username, self.password))
+        else:
+            pass
+
     def on_stop(self):
         self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
 
 
 class WebsiteUser(HttpUser):
-    tasks = {
-        NewUserBehavior: 1,
-        ExistingUserBehavior: 10,
-        RandomBehavior: 5
-    }
+    # tasks = {
+    #     NewUserBehavior: 1,
+    #     ExistingUserBehavior: 10,
+    #     RandomBehavior: 5
+    # }
+    tasks = [RandomBehavior]
     wait_time = between(3.0, 10.5)

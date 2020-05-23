@@ -136,3 +136,15 @@ a.article-title:hover {
   text-decoration: none;
   cursor: pointer;
 }
+
+.edit {
+  color: white;
+}
+
+.edit:hover {
+  color: white;
+}
+
+#self, #dep {
+  margin-top: 5px;
+}

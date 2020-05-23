@@ -53,7 +53,7 @@ def search():
     return render_template('search_lessons.html', title='Search', form=form)
 
 
-@app.route('/register_yourself/<int:lesson_id>', methods=['POST'])
+@app.route('/register_yourself/<int:lesson_id>', methods=['GET', 'POST'])
 @login_required
 def register_yourself(lesson_id):
     lesson = Lesson.query.get_or_404(lesson_id)
@@ -191,6 +191,15 @@ def update_username():
     if form.validate_on_submit():
         user.username = form.username.data
         db.session.commit()
-        flash(f'Success', 'success')
+        flash(f'Username was successfully changed!', 'success')
         return redirect(url_for('profile'))
     return render_template('edit_username.html', title='Change Username', form=form)
+
+@app.route('/remove_dep/<int:dep_id>', methods=['POST'])
+@login_required
+def remove_dep(dep_id):
+    dependent = Participant.query.get_or_404(dep_id)
+    db.session.delete(dependent)
+    db.session.commit()
+    flash(f'Dependent was successfully deleted.', 'success')
+    return redirect(url_for('profile'))

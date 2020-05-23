@@ -3,9 +3,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <div class="content-section">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-12">
                     <h2>Profile Picture</h2>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-8">
                     <h2 class="list-group-item">Information</h2>
                     <li class="list-group-item" name="fName">First Name: {{ current_user.fName }}</li>
@@ -13,17 +15,14 @@
                     <li class="list-group-item" name="lName">Username: {{ current_user.username }}</li>
                     <li class="list-group-item" name="email">Email: {{ current_user.email }}</li>
                 </div>
-            </div>
-            <div  class="row">
                 <div class="col-md-4">
-                    <button class="btn btn-outline-info btn-sm">
-                        <a class="nav-item nav-link" href="{{ url_for('update_username') }}">
+                    <button class="btn btn-info btn-sm">
+                        <a class="edit" href="{{ url_for('update_username') }}">
                             Change Username
                         </a>
                     </button>
                 </div>
             </div>
-            <!--TODO: Change this to look better-->
             <div class="row">
                 <div class="col-md-12">
                     <h3>Your classes.</h3>
@@ -38,8 +37,8 @@
                             <h5 class="article-content">{{ lesson.name }}</h5>
                             <p class="font-weight-light">Start/End Date: {{ lesson.startDate }} to {{ lesson.endDate }}</p>
                             <p class="font-weight-light">Time: {{ lesson.startTime }} - {{ lesson.endTime }}</p>
-                            <button class="btn btn-outline-info btn-sm">
-                                <a class="nav-item nav-link" href="{{ url_for('lesson_info', lesson_id=lesson.id, user_id=current_user.id) }}">
+                            <button class="btn btn-info btn-sm">
+                                <a class="edit" href="{{ url_for('lesson_info', lesson_id=lesson.id, user_id=current_user.id) }}">
                                     View Information/Unregister
                                 </a>
                             </button>
@@ -53,8 +52,16 @@
             </div>
             <div class="row">
                 {% for dependent in dependents %}
-                    <div class="col-md-12">
-                        <h5>{{ dependent.fName }} {{ dependent.lName }} is registered for:</h5>
+                    <div class="col-md-8">
+                        <h4>Name: {{ dependent.fName }} {{ dependent.lName }}</h4>
+                        <p>Contact Email: {{ dependent.contactEmail }}</p>
+                        <p>Contact Number: {{ dependent.contactNum }}</p>
+                        <h4>Lessons:</h4>
+                    </div>
+                    <div class="col-md-4">
+                        <form action="{{ url_for('remove_dep', dep_id=dependent.id) }}" method="POST">
+                            <input class="btn btn-danger" type="submit" value="Remove Dependent">
+                        </form>
                     </div>
                     {% for lesson in dependent.lessons %}
                     <div class="col-md-6">
@@ -64,8 +71,8 @@
                                 <h5 class="article-content">{{ lesson.name }}</h5>
                                 <p class="font-weight-light">Start/End Date: {{ lesson.startDate }} to {{ lesson.endDate }}</p>
                                 <p class="font-weight-light">Time: {{ lesson.startTime }} - {{ lesson.endTime }}</p>
-                                <button class="btn btn-outline-info btn-sm">
-                                    <a class="nav-item nav-link" href="{{ url_for('dep_lesson_info', lesson_id=lesson.id, dep_id=dependent.id) }}">
+                                <button class="btn btn-info btn-sm">
+                                    <a class="edit" href="{{ url_for('dep_lesson_info', lesson_id=lesson.id, dep_id=dependent.id) }}">
                                         View Information/Unregister
                                     </a>
                                 </button>
@@ -77,8 +84,8 @@
             </div>
             <div class="row">
                 <div class="col-md-4">
-                    <button class="btn btn-outline-info">
-                        <a class="nav-item nav-link" href="{{ url_for('search') }}">
+                    <button class="btn btn-info">
+                        <a class="edit" href="{{ url_for('search') }}">
                             Search/Register
                         </a>
                     </button>
