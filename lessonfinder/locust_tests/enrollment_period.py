@@ -12,8 +12,11 @@ import pdb
 def find_token(resp):
     pattern = 'csrf_token.*csrf_token.*value[=]["](.*)["]'
     result = re.search(pattern, resp.text)
-    csrf_token = str(result.group(1))
-    return csrf_token
+    if result:
+        csrf_token = str(result.group(1))
+        return csrf_token
+    else:
+        return False
 
 
 # sets a hash of params to search for
@@ -24,12 +27,15 @@ def search_params(response):
     # startDate = date(year, month, day)
     # startTime = time(random.randrange(7, 19))
     day_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
-    params = {"level": random.randrange(1, 7),
-              "location": "Recreation Center " + str(random.randrange(1, 31)),
-              "day": day_of_week[random.randrange(0, len(day_of_week))],
-              "csrf_token": find_token(response)}
-    return params
+    csrf_token = find_token(response)
+    if csrf_token:
+        params = {"level": random.randrange(1, 7),
+                  "location": "Recreation Center " + str(random.randrange(1, 31)),
+                  "day": day_of_week[random.randrange(0, len(day_of_week))],
+                  "csrf_token": csrf_token}
+        return params
+    else:
+        return False
 
 
 # sets a set of params to signup with Lesson Finder
@@ -66,15 +72,18 @@ class ExistingUserBehavior(SequentialTaskSet):
     def on_start(self):
         print("Starting existing user...")
         response = self.client.get('/user/sign-in')
-        csrf_token = find_token(response)
         self.username = 'Test' + self.id + 'User'
         self.password = 'thi5IztesT' + self.id
-        self.client.post('/user/sign-in', {'username': self.username,
-                                           'password': self.password,
-                                           'next': '/',
-                                           'reg_next': '/',
-                                           'csrf_token': csrf_token,
-                                           'submit': 'Sign in'})
+        csrf_token = find_token(response)
+        if csrf_token:
+            self.client.post('/user/sign-in', {'username': self.username,
+                                               'password': self.password,
+                                               'next': '/',
+                                               'reg_next': '/',
+                                               'csrf_token': csrf_token,
+                                               'submit': 'Sign in'})
+        else:
+            pass
 
     @task
     def profile(self):
@@ -85,14 +94,15 @@ class ExistingUserBehavior(SequentialTaskSet):
     def successful_register(self):
         get_search = self.client.get("/search")
         response = self.client.post("/search", search_params(get_search))
+        csrf_token = find_token(response)
         register_self = random.randrange(1, 3)
         if register_self == 1:
             link = find_lesson_id(response, '/register_yourself/\d*')
-            if link:
+            if link and csrf_token:
                 self.client.request("post", link, auth=(self.username, self.password))
         else:
             link = find_lesson_id(response, '/register/\d*')
-            if link:
+            if link and csrf_token:
                 response = self.client.request("get", link, auth=(self.username, self.password))
                 dep = "Dependent" + self.id
                 email = "test" + self.id + "user@mail.com"
@@ -102,9 +112,10 @@ class ExistingUserBehavior(SequentialTaskSet):
                                     "fName": dep,
                                     "lName": "User",
                                     "contactEmail": email,
-                                    "csrf_token": find_token(response)
+                                    "csrf_token": csrf_token
                                    },
                                    auth=(self.username, self.password))
+        pass
 
     @task
     def index(self):
@@ -129,7 +140,10 @@ class NewUserBehavior(SequentialTaskSet):
         get_search = self.client.get("/search")
         response = self.client.post("/search", search_params(get_search))
         link = find_lesson_id(response, '/register_yourself/\d*')
-        self.client.request("post", link)
+        if link:
+            self.client.request("post", link)
+        else:
+            pass
 
     @task
     def signup(self):
@@ -139,15 +153,18 @@ class NewUserBehavior(SequentialTaskSet):
     @task
     def start_authorized_user(self):
         response = self.client.get('/user/sign-in')
-        csrf_token = find_token(response)
         self.username = 'Test' + self.id + 'User'
         self.password = 'thi5IztesT' + self.id
-        self.client.post('/user/sign-in', {'username': self.username,
-                                           'password': self.password,
-                                           'next': '/',
-                                           'reg_next': '/',
-                                           'csrf_token': csrf_token,
-                                           'submit': 'Sign in'})
+        csrf_token = find_token(response)
+        if csrf_token:
+            self.client.post('/user/sign-in', {'username': self.username,
+                                               'password': self.password,
+                                               'next': '/',
+                                               'reg_next': '/',
+                                               'csrf_token': csrf_token,
+                                               'submit': 'Sign in'})
+        else:
+            pass
 
     @task
     def profile(self):
@@ -158,7 +175,10 @@ class NewUserBehavior(SequentialTaskSet):
         get_search = self.client.get("/search")
         response = self.client.post("/search", search_params(get_search))
         link = find_lesson_id(response, '/register_yourself/\d*')
-        self.client.request("post", link, auth=(self.username, self.password))
+        if link:
+            self.client.request("post", link, auth=(self.username, self.password))
+        else:
+            pass
 
     def on_stop(self):
         self.client.post("/user/sign-out", {"username":self.username, "password":self.password})
@@ -171,16 +191,19 @@ class RandomBehavior(TaskSet):
 
     def on_start(self):
         print("starting random behavior...")
-        response = self.client.get('/user/sign-in')
-        csrf_token = find_token(response)
         self.username = 'Test' + self.id + 'User'
         self.password = 'thi5IztesT' + self.id
-        self.client.post('/user/sign-in', {'username': self.username,
-                                           'password': self.password,
-                                           'next': '/',
-                                           'reg_next': '/',
-                                           'csrf_token': csrf_token,
-                                           'submit': 'Sign in'})
+        response = self.client.get('/user/sign-in')
+        csrf_token = find_token(response)
+        if csrf_token:
+            self.client.post('/user/sign-in', {'username': self.username,
+                                               'password': self.password,
+                                               'next': '/',
+                                               'reg_next': '/',
+                                               'csrf_token': csrf_token,
+                                               'submit': 'Sign in'})
+        else:
+            pass
 
     @task
     def profile(self):
@@ -192,12 +215,16 @@ class RandomBehavior(TaskSet):
                                        "/update_username",
                                        auth=(self.username, self.password))
         csrf_token = find_token(response)
-        self.client.request('post',
-                            '/update_username',
-                            params={'username': self.username + "Changed",
-                                    'csrf_token': csrf_token,
-                                    'submit': 'Submit Changes'},
-                            auth=(self.username, self.password))
+        if csrf_token:
+            username = self.username + "Changed"
+            self.client.request('post',
+                                '/update_username',
+                                params={'username': username,
+                                        'csrf_token': csrf_token,
+                                        'submit': 'Submit Changes'},
+                                auth=(self.username, self.password))
+        else:
+            pass
 
     @task
     def successful_self_register(self):
@@ -216,15 +243,17 @@ class RandomBehavior(TaskSet):
             response = self.client.request("get", link, auth=(self.username, self.password))
             dep = "Dependent" + self.id
             email = "test" + self.id + "user@mail.com"
-            self.client.request("post",
-                                link,
-                                params={
-                                    "fName": dep,
-                                    "lName": "User",
-                                    "contactEmail": email,
-                                    "csrf_token": find_token(response)
-                                },
-                                auth=(self.username, self.password))
+            csrf_token = find_token(response)
+            if csrf_token:
+                self.client.request("post",
+                                    link,
+                                    params={
+                                        "fName": dep,
+                                        "lName": "User",
+                                        "contactEmail": email,
+                                        "csrf_token": csrf_token
+                                    },
+                                    auth=(self.username, self.password))
 
     @task
     def remove_lesson(self):
@@ -232,10 +261,17 @@ class RandomBehavior(TaskSet):
         lesson_link = find_lesson_id(profile_resp, '/lesson_info/\d*\?user_id=\d*')
         if lesson_link:
             lesson_info = self.client.get(lesson_link)
-            unregister_link = find_lesson_id(lesson_info, '/unregister/\d*/delete')
-            self.client.request("post",
-                                unregister_link,
-                                auth=(self.username, self.password))
+            if lesson_info:
+                unregister_self = find_lesson_id(lesson_info, '/unregister/\d*/delete')
+                unregister_dep = find_lesson_id(lesson_info, '/unregister_dep/\d*/delete/\d*')
+                if unregister_self:
+                    self.client.request("post",
+                                        unregister_self,
+                                        auth=(self.username, self.password))
+                else:
+                    self.client.request("post",
+                                        unregister_dep,
+                                        auth=(self.username, self.password))
         else:
             pass
 
@@ -248,15 +284,16 @@ class RandomBehavior(TaskSet):
             edit_info_link = find_lesson_id(lesson_info, '/edit_registration/\d*')
             edit_page = self.client.get(edit_info_link)
             csrf_token = find_token(edit_page)
-            new_email = "change" + self.id + "email@mail.com"
-            new_phone = "203-123-45" + self.id
-            self.client.post("post",
-                             edit_page,
-                             params={'contactEmail': new_email,
-                                     'contactNum': new_phone,
-                                     'csrf_token': csrf_token,
-                                     'submit': 'Submit Changes'},
-                             auth=(self.username, self.password))
+            if csrf_token:
+                new_email = "change" + self.id + "email@mail.com"
+                new_phone = "203-123-45" + self.id
+                self.client.post("post",
+                                 edit_page,
+                                 params={'contactEmail': new_email,
+                                         'contactNum': new_phone,
+                                         'csrf_token': csrf_token,
+                                         'submit': 'Submit Changes'},
+                                 auth=(self.username, self.password))
         else:
             pass
 
@@ -276,10 +313,9 @@ class RandomBehavior(TaskSet):
 
 
 class WebsiteUser(HttpUser):
-    # tasks = {
-    #     NewUserBehavior: 1,
-    #     ExistingUserBehavior: 10,
-    #     RandomBehavior: 5
-    # }
-    tasks = [RandomBehavior]
+    tasks = {
+        NewUserBehavior: 1,
+        ExistingUserBehavior: 10,
+        RandomBehavior: 1
+    }
     wait_time = between(3.0, 10.5)
