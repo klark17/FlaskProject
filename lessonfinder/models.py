@@ -30,11 +30,6 @@ class User(db.Model, UserMixin):
     lessons = db.relationship('Lesson', secondary=lessons, backref=db.backref('selfParticipant', lazy='dynamic'))
     dependents = db.relationship('Participant', backref=db.backref('guardian'))
 
-    # organization = db.relationship('Organization', uselist=False, backref='admin')
-    # roles = db.relationship('Role', secondary='user_roles', backref=db.backref('users', lazy='dynamic'))
-    # active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
-    # organizer = db.relationship('Lesson', backref='contactEmail', lazy='dynamic')
-
     def __repr__(self):
         return f"User('{self.fName}', '{self.username}', '{self.email}')"
 
@@ -47,7 +42,6 @@ class Participant(db.Model, UserMixin):
     contactEmail = db.Column(db.String(50), nullable=False)
     user = db.Column(db.Integer, db.ForeignKey('user.id'))
     lessons = db.relationship('Lesson', secondary=depLessons, backref=db.backref('participants', lazy='dynamic'))
-
 
     def __repr__(self):
         return f"Dependent('{self.fName}', '{self.contactNum}', '{self.contactEmail}')"

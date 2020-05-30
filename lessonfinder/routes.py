@@ -1,9 +1,8 @@
 from flask import render_template, url_for, flash, redirect, request
 from lessonfinder import app, db, user_manager
-from lessonfinder.form import LoginForm, SearchForm, LessonForm, SignupForm, RegistrationForm, levels, \
+from lessonfinder.form import SearchForm, SignupForm, RegistrationForm, levels, \
     UpdateUsernameForm, EditRegistrationForm
-from lessonfinder.models import User, Participant, Lesson, Organization
-# from flask_login import login_user, current_user, logout_user, login_required
+from lessonfinder.models import User, Participant, Lesson
 from flask_user import current_user, login_required, roles_required
 from sqlalchemy import or_
 
@@ -90,7 +89,7 @@ def register(lesson_id):
                     exists = True
                     existingDep = dep
                     break
-            if exists == True:
+            if exists:
                 if lesson in existingDep.lessons:
                     flash(f'You\'re dependent is already registered for this lesson. Please search for another one.', 'danger')
                     return redirect('/search')
@@ -132,7 +131,7 @@ def unregister_dep(lesson_id, dep_id):
     dependent.lessons.remove(lesson)
     db.session.commit()
     return redirect(url_for('profile'))
-# participant and selfParticipant
+
 
 @app.route("/dep_lesson_info/<int:lesson_id>/<int:dep_id>")
 @login_required
@@ -194,6 +193,7 @@ def update_username():
         flash(f'Username was successfully changed!', 'success')
         return redirect(url_for('profile'))
     return render_template('edit_username.html', title='Change Username', form=form)
+
 
 @app.route('/remove_dep/<int:dep_id>', methods=['POST'])
 @login_required

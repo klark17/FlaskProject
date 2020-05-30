@@ -282,18 +282,19 @@ class RandomBehavior(TaskSet):
         if lesson_link:
             lesson_info = self.client.get(lesson_link)
             edit_info_link = find_lesson_id(lesson_info, '/edit_registration/\d*')
-            edit_page = self.client.get(edit_info_link)
-            csrf_token = find_token(edit_page)
-            if csrf_token:
-                new_email = "change" + self.id + "email@mail.com"
-                new_phone = "203-123-45" + self.id
-                self.client.post("post",
-                                 edit_page,
-                                 params={'contactEmail': new_email,
-                                         'contactNum': new_phone,
-                                         'csrf_token': csrf_token,
-                                         'submit': 'Submit Changes'},
-                                 auth=(self.username, self.password))
+            if edit_info_link:
+                edit_page = self.client.get(edit_info_link)
+                csrf_token = find_token(edit_page)
+                if csrf_token:
+                    new_email = "change" + self.id + "email@mail.com"
+                    new_phone = "203-123-45" + self.id
+                    self.client.post("post",
+                                     edit_page,
+                                     params={'contactEmail': new_email,
+                                             'contactNum': new_phone,
+                                             'csrf_token': csrf_token,
+                                             'submit': 'Submit Changes'},
+                                     auth=(self.username, self.password))
         else:
             pass
 
