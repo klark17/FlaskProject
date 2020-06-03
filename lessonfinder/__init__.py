@@ -12,7 +12,6 @@ app.config['USER_USER_SESSION_EXPIRATION'] = 720
 db = SQLAlchemy(app)
 
 from lessonfinder.models import User
-from lessonfinder.form import LoginForm
 
 user_manager = UserManager(app, db, User)
 

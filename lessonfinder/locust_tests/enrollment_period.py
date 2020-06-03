@@ -40,16 +40,19 @@ def search_params(response):
 
 # sets a set of params to signup with Lesson Finder
 def signup_params(num):
-    id = str(num + 1)
     year = random.randrange(1960, 2001)
     month = random.randrange(1, 13)
     day = random.randrange(1, 29)
-    params = {"fName": "Test" + id,
+    fName = "Test" + num
+    email = "test" + num + "user@mail.com"
+    username = "Test" + num + "User"
+    password = "thi5IztesT" + num
+    params = {"fName": fName,
               "lName": "User",
-              "email": "test" + id + "user@mail.com",
+              "email": email,
               "birthday": datetime.date(year, month, day),
-              "username": "Test" + id + "User",
-              "password": "thi5IztesT" + id}
+              "username": username,
+              "password": password}
 
     return(params)
 
@@ -65,12 +68,12 @@ def find_lesson_id(resp, pattern):
 
 class ExistingUserBehavior(SequentialTaskSet):
 
-    id = str(random.randrange(1, 501))
+    id = None
     username = None
     password = None
 
     def on_start(self):
-        print("Starting existing user...")
+        self.id = str(random.randrange(1, 501))
         response = self.client.get('/user/sign-in')
         self.username = 'Test' + self.id + 'User'
         self.password = 'thi5IztesT' + self.id
@@ -126,13 +129,12 @@ class ExistingUserBehavior(SequentialTaskSet):
 
 
 class NewUserBehavior(SequentialTaskSet):
-    id = str(random.randrange(501, 1001))
+    id = None
     username = None
     password = None
 
-    @task
-    def home(self):
-        print("Starting new user...")
+    def on_start(self):
+        self.id = str(random.randrange(501, 1001))
         self.client.get("/about")
 
     @task
@@ -148,7 +150,7 @@ class NewUserBehavior(SequentialTaskSet):
     @task
     def signup(self):
         self.client.get("/signup")
-        self.client.post("/signup", signup_params(int(self.id)))
+        self.client.post("/signup", signup_params(self.id))
 
     @task
     def start_authorized_user(self):
@@ -185,12 +187,12 @@ class NewUserBehavior(SequentialTaskSet):
 
 
 class RandomBehavior(TaskSet):
-    id = str(random.randrange(1, 501))
+    id = None
     username = None
     password = None
 
     def on_start(self):
-        print("starting random behavior...")
+        self.id = str(random.randrange(1, 501))
         self.username = 'Test' + self.id + 'User'
         self.password = 'thi5IztesT' + self.id
         response = self.client.get('/user/sign-in')
