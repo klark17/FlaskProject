@@ -97,21 +97,21 @@ class ExistingUserBehavior(SequentialTaskSet):
     def successful_register(self):
         get_search = self.client.get("/search")
         response = self.client.post("/search", search_params(get_search))
-        csrf_token = find_token(response)
         register_self = random.randrange(1, 3)
         if register_self == 1:
             link = find_lesson_id(response, '/register_yourself/\d*')
-            if link and csrf_token:
+            if link:
                 self.client.request("post", link, auth=(self.username, self.password))
         else:
             link = find_lesson_id(response, '/register/\d*')
-            if link and csrf_token:
+            if link:
                 response = self.client.request("get", link, auth=(self.username, self.password))
+                csrf_token = find_token(response)
                 dep = "Dependent" + self.id
                 email = "test" + self.id + "user@mail.com"
                 self.client.request("post",
                                     link,
-                                    params={
+                                    data={
                                     "fName": dep,
                                     "lName": "User",
                                     "contactEmail": email,
@@ -221,7 +221,7 @@ class RandomBehavior(TaskSet):
             username = self.username + "Changed"
             self.client.request('post',
                                 '/update_username',
-                                params={'username': username,
+                                data={'username': username,
                                         'csrf_token': csrf_token,
                                         'submit': 'Submit Changes'},
                                 auth=(self.username, self.password))
@@ -249,7 +249,7 @@ class RandomBehavior(TaskSet):
             if csrf_token:
                 self.client.request("post",
                                     link,
-                                    params={
+                                    data={
                                         "fName": dep,
                                         "lName": "User",
                                         "contactEmail": email,
@@ -290,12 +290,12 @@ class RandomBehavior(TaskSet):
                 if csrf_token:
                     new_email = "change" + self.id + "email@mail.com"
                     new_phone = "203-123-45" + self.id
-                    self.client.post("post",
-                                     edit_page,
-                                     params={'contactEmail': new_email,
-                                             'contactNum': new_phone,
-                                             'csrf_token': csrf_token,
-                                             'submit': 'Submit Changes'},
+                    self.client.request("post",
+                                     edit_info_link,
+                                     data={'contactEmail': new_email,
+                                      'contactNum': new_phone,
+                                      'csrf_token': csrf_token,
+                                      'submit': 'Submit Changes'},
                                      auth=(self.username, self.password))
         else:
             pass
