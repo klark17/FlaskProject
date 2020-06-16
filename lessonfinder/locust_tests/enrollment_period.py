@@ -21,11 +21,6 @@ def find_token(resp):
 
 # sets a hash of params to search for
 def search_params(response):
-    # year = random.randrange(2020, 2021)
-    # month = random.randrange(1, 13)
-    # day = random.randrange(1, 29)
-    # startDate = date(year, month, day)
-    # startTime = time(random.randrange(7, 19))
     day_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     csrf_token = find_token(response)
     if csrf_token:
@@ -68,12 +63,11 @@ def find_lesson_id(resp, pattern):
 
 class ExistingUserBehavior(SequentialTaskSet):
 
-    id = None
+    id = str(random.randrange(1, 501))
     username = None
     password = None
 
     def on_start(self):
-        self.id = str(random.randrange(1, 501))
         response = self.client.get('/user/sign-in')
         self.username = 'Test' + self.id + 'User'
         self.password = 'thi5IztesT' + self.id
@@ -129,12 +123,11 @@ class ExistingUserBehavior(SequentialTaskSet):
 
 
 class NewUserBehavior(SequentialTaskSet):
-    id = None
+    id = str(random.randrange(501, 1001))
     username = None
     password = None
 
     def on_start(self):
-        self.id = str(random.randrange(501, 1001))
         self.client.get("/about")
 
     @task
@@ -187,12 +180,11 @@ class NewUserBehavior(SequentialTaskSet):
 
 
 class RandomBehavior(TaskSet):
-    id = None
+    id = str(random.randrange(1, 501))
     username = None
     password = None
 
     def on_start(self):
-        self.id = str(random.randrange(1, 501))
         self.username = 'Test' + self.id + 'User'
         self.password = 'thi5IztesT' + self.id
         response = self.client.get('/user/sign-in')
