@@ -255,17 +255,25 @@ class RandomBehavior(TaskSet):
         lesson_link = find_lesson_id(profile_resp, '/lesson_info/\d*\?user_id=\d*')
         if lesson_link:
             lesson_info = self.client.get(lesson_link)
-            if lesson_info:
-                unregister_self = find_lesson_id(lesson_info, '/unregister/\d*/delete')
-                unregister_dep = find_lesson_id(lesson_info, '/unregister_dep/\d*/delete/\d*')
-                if unregister_self:
-                    self.client.request("post",
-                                        unregister_self,
-                                        auth=(self.username, self.password))
-                else:
-                    self.client.request("post",
-                                        unregister_dep,
-                                        auth=(self.username, self.password))
+            unregister_self = find_lesson_id(lesson_info, '/unregister/\d*/delete')
+            if unregister_self:
+                self.client.request("post",
+                                    unregister_self,
+                                    auth=(self.username, self.password))
+        else:
+            pass
+
+    @task
+    def remove_dep_lesson(self):
+        profile_resp = self.client.request("get", "/profile", auth=(self.username, self.password))
+        lesson_link = find_lesson_id(profile_resp, '/dep_lesson_info/\d*/\d*')
+        if lesson_link:
+            lesson_info = self.client.get(lesson_link)
+            unregister_dep = find_lesson_id(lesson_info, '/unregister_dep/\d*/delete/\d*')
+            if unregister_dep:
+                self.client.request("post",
+                                    unregister_dep,
+                                    auth=(self.username, self.password))
         else:
             pass
 
