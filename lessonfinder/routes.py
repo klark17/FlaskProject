@@ -17,8 +17,6 @@ def about():
 def signup():
     if current_user.is_authenticated and current_user.roles == 'user':
         return redirect(url_for('profile'))
-    elif current_user.is_authenticated and current_user.roles == 'admin':
-        return redirect(url_for('admin_profile'))
     form = SignupForm()
     if form.validate_on_submit():
         user = User(active=True, fName=form.fName.data, lName=form.lName.data, email=form.email.data, birthday=form.birthday.data,

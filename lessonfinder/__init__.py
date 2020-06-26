@@ -16,7 +16,3 @@ from lessonfinder.models import User
 user_manager = UserManager(app, db, User)
 
 from lessonfinder import routes
-
-
-
-

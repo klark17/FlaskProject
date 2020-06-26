@@ -65,7 +65,3 @@ class EditRegistrationForm(FlaskForm):
     contactNum = StringField('Contact Phone Number', render_kw={'placeholder': '123-456-7890'})
     contactEmail = StringField('Contact Email', validators=[Optional()])
     submit = SubmitField('Submit Changes')
-
-
-
-

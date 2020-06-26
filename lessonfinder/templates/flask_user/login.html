@@ -46,13 +46,9 @@
             Need An Account? <a class="ml-2" href="{{ url_for('signup') }}">Sign Up Now</a>
         </small>
     </div>
-    {# Remember me #}
-    {% if user_manager.USER_ENABLE_REMEMBER_ME %}
-    {{ render_checkbox_field(login_form.remember_me, tabindex=130) }}
-    {% endif %}
 
     <div class="form-group">
-        {{ form.submit(class="btn btn-outline-info") }}
+        {{ form.submit(class="btn btn-info") }}
     </div>
     {# Submit button #}
 {#    {{ render_submit_field(form.submit, tabindex=180) }}#}
